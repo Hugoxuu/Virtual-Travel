@@ -1,0 +1,8 @@
+Pittsburgh	0	Welcome to Pittsburgh	http://apps.pittsburghpa.gov/redtail/images/231_City_Pittsburgh_Incline.jpg
+Seattle	0	Welcome to Seattle	http://www.heritageschoolofinteriordesign.com/main/wp-content/uploads/2018/05/103845788-_sites-default-files-images-103845788-GettyImages-155735310.1910x1000.jpg
+Chicago	0	Welcome to Chicago	https://media.timeout.com/images/105332928/630/472/image.jpg
+Orlando	0	Welcome to Orlando	https://media.timeout.com/images/105309527/image.jpg
+Las Vegas	100	Welcome to Las Vegas	http://static1.squarespace.com/static/545b59d9e4b032c1794b26b9/545b8cc2e4b0e5122ef68805/5c4cb42540ec9a53af396501/1548530928820/LasVegas.jpg?format=1500w
+Los Angeles	200	Welcome to Los Angeles	https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Los_Angeles%2C_Winter_2016.jpg/1200px-Los_Angeles%2C_Winter_2016.jpg
+New York City	300	Welcome to New York City	https://romanroams.com/wp-content/uploads/2017/07/New_York_NYC-1024x512.jpg
+Washington D.C.	200	Welcome to Washinton D.C.	https://i.kinja-img.com/gawker-media/image/upload/s--_FkwptPI--/c_scale,f_auto,fl_progressive,q_80,w_800/asonbeoxc84ux4oklgm6.jpg

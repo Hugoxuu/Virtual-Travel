@@ -1,0 +1,252 @@
+{% extends "virtualTravel/base.html" %}
+
+{% block content %}
+  <div class = "food_container">
+    <form action="{% url 'food_search' %}" method='post'>
+            {% csrf_token %}
+
+      <div class="jumbotron" style="background-color: rgb(73, 46, 65) ; color: white;">
+        <h1 class="text-center">
+          <strong>
+            <i class="fas fa-utensils fa-2x"></i> <h1>YUMMY!</h1></strong>
+        </h1>
+      </div>
+          <h4> &nbsp
+            <i class="fas fa-map-marker-alt"></i> You are at {{current_city.name}}
+          </h4>
+       <div class='location_input_container'>
+            <input class='food_preference' name='food_preference' type='text' placeholder='Desired Type of Food'>
+        </div>
+        <div style="text-align:center">
+            <input class='submit_categories' name='submit_categories' type='submit' value='Submit Your Preferences'>
+        </div>
+    </form>
+
+      <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+             <div class="one_food_item">
+              <div class="one_food_content">
+                <div class="img-wrap">
+                    <div class="img-box">
+                      <form action="{% url 'food_search' %}" method='post'>
+                        <input type="hidden" value="Lunch Specials"  name = "food_preference">
+                        <input type = "image" src="https://res.cloudinary.com/grubhub/d_search:browse-images:default.jpg/dpr_auto,c_fill,w_124,h_124,f_auto,q_auto,g_auto/search/browse-images/lunch-specials.jpg" alt="Submit" class="cuisineRibbon-cuisine-image s-img-responsive u-rounded ">
+                        {% csrf_token %}
+                       </form>
+
+                    </div>
+                </div>
+                <div class="u-text-primary caption u-stack-x-1 cuisineRibbon-cuisine-name ghs-cuisineRibbon-value">Lunch Specials</div>
+              </div>
+          </div>
+          <div class="one_food_item">
+              <div class="one_food_content">
+                <div class="img-wrap">
+                    <div class="img-box">
+                       <form action="{% url 'food_search' %}" method='post'>
+                        <input type="hidden" value="Pizza"  name = "food_preference">
+                         <input src="https://res.cloudinary.com/grubhub/d_search:browse-images:default.jpg/dpr_auto,c_fill,w_124,h_124,f_auto,q_auto,g_auto/search/browse-images/pizza.jpg" type="image" class="cuisineRibbon-cuisine-image s-img-responsive u-rounded"> 
+                         {% csrf_token %}
+                         </form>
+                    </div>
+                </div>
+               <div class="u-text-primary caption u-stack-x-1 cuisineRibbon-cuisine-name ghs-cuisineRibbon-value">Pizza</div>
+               </div>
+        </div>
+            <div class="one_food_item">
+                <div class="one_food_content">
+                <div class="img-wrap">
+                    <div class="img-box">
+                        <form action="{% url 'food_search' %}" method='post'>
+                        <input type="hidden" value="Asian" name = "food_preference">
+                        <input src="https://res.cloudinary.com/grubhub/d_search:browse-images:default.jpg/dpr_auto,c_fill,w_124,h_124,f_auto,q_auto,g_auto/search/browse-images/asian.jpg"  type="image" class="cuisineRibbon-cuisine-image s-img-responsive u-rounded">
+                        {% csrf_token %}
+                         </form>
+                      </div>
+                   </div>
+                   <div class="u-text-primary caption u-stack-x-1 cuisineRibbon-cuisine-name ghs-cuisineRibbon-value">Asian</div>
+               </div>
+        </div>
+             <div class="one_food_item">
+                <div class="one_food_content">
+                <div class="img-wrap">
+                    <div class="img-box">
+                        <form action="{% url 'food_search' %}" method='post'>
+                        <input type="hidden" value="American" name = "food_preference">
+                        <input src="https://res.cloudinary.com/grubhub/d_search:browse-images:default.jpg/dpr_auto,c_fill,w_124,h_124,f_auto,q_auto,g_auto/search/browse-images/american.jpg"  type="image" class="cuisineRibbon-cuisine-image s-img-responsive u-rounded">
+                        {% csrf_token %}
+                        </form>
+                    </div>
+                    </div>
+                    <div class="u-text-primary caption u-stack-x-1 cuisineRibbon-cuisine-name ghs-cuisineRibbon-value">American</div>
+                </div>
+            </div>
+            <div class="one_food_item">
+                <div class="one_food_content">
+                <div class="img-wrap">
+                    <div class="img-box">
+                      <form action="{% url 'food_search' %}" method='post'>
+                      <input type="hidden" value="Italian" name = "food_preference">
+                        <input src="https://res.cloudinary.com/grubhub/d_search:browse-images:default.jpg/dpr_auto,c_fill,w_124,h_124,f_auto,q_auto,g_auto/search/browse-images/italian.jpg" type="image" class="cuisineRibbon-cuisine-image s-img-responsive u-rounded">
+                        {% csrf_token %}
+                        </form>
+                    </div>
+                </div>
+                <div class="u-text-primary caption u-stack-x-1 cuisineRibbon-cuisine-name ghs-cuisineRibbon-value">Italian</div>
+            </div>
+            </div>
+            <div class="one_food_item">
+                <div class="one_food_content">
+                <div class="img-wrap">
+                    <div class="img-box">
+                        <form action="{% url 'food_search' %}" method='post'>
+                        <input type="hidden" value="Mexican" name = "food_preference">
+                        <input src="https://res.cloudinary.com/grubhub/d_search:browse-images:default.jpg/dpr_auto,c_fill,w_124,h_124,f_auto,q_auto,g_auto/search/browse-images/mexican.jpg" type="image" class="cuisineRibbon-cuisine-image s-img-responsive u-rounded">
+                        {% csrf_token %}
+                        </form>
+                    </div>
+                </div>
+                <div class="u-text-primary caption u-stack-x-1 cuisineRibbon-cuisine-name ghs-cuisineRibbon-value">Mexican</div>
+            </div>
+        </div>
+    </div>
+    <div class="carousel-item">
+      <div class="one_food_item">
+              <div class="one_food_content">
+                <div class="img-wrap">
+                    <div class="img-box">
+                        <form action="{% url 'food_search' %}" method='post'>
+                        <input type="hidden" value="Vegetarian" name = "food_preference">
+                        <input src="https://res.cloudinary.com/grubhub/d_search:browse-images:default.jpg/dpr_auto,c_fill,w_124,h_124,f_auto,q_auto,g_auto/search/browse-images/vegetarian.jpg" type="image" class="cuisineRibbon-cuisine-image s-img-responsive u-rounded">
+                        {% csrf_token %}
+                        </form>
+                    </div>
+                </div>
+                <div class="u-text-primary caption u-stack-x-1 cuisineRibbon-cuisine-name ghs-cuisineRibbon-value">Vegetarian</div>
+              </div>
+          </div>
+          <div class="one_food_item">
+              <div class="one_food_content">
+                <div class="img-wrap">
+                    <div class="img-box">
+                        <form action="{% url 'food_search' %}" method='post'>
+                        <input type="hidden" value="Dessert" name = "food_preference">
+                         <input src="https://res.cloudinary.com/grubhub/d_search:browse-images:default.jpg/dpr_auto,c_fill,w_124,h_124,f_auto,q_auto,g_auto/search/browse-images/dessert.jpg" type="image" class="cuisineRibbon-cuisine-image s-img-responsive u-rounded">
+                         {% csrf_token %}
+                        </form>
+                    </div>
+                </div>
+               <div class="u-text-primary caption u-stack-x-1 cuisineRibbon-cuisine-name ghs-cuisineRibbon-value">Dessert</div>
+               </div>
+        </div>
+            <div class="one_food_item">
+                <div class="one_food_content">
+                <div class="img-wrap">
+                    <div class="img-box">
+                      <form action="{% url 'food_search' %}" method='post'>
+                        <input type="hidden" value="Indian" name = "food_preference">
+                        <input src="https://res.cloudinary.com/grubhub/d_search:browse-images:default.jpg/dpr_auto,c_fill,w_124,h_124,f_auto,q_auto,g_auto/search/browse-images/indian.jpg"  type="image" class="cuisineRibbon-cuisine-image s-img-responsive u-rounded">
+                        {% csrf_token %}
+                        </form>
+                      </div>
+                   </div>
+                   <div class="u-text-primary caption u-stack-x-1 cuisineRibbon-cuisine-name ghs-cuisineRibbon-value">Indian</div>
+               </div>
+        </div>
+             <div class="one_food_item">
+                <div class="one_food_content">
+                <div class="img-wrap">
+                    <div class="img-box">
+                       <form action="{% url 'food_search' %}" method='post'>
+                        <input type="hidden" value="Noodles" name = "food_preference">
+                        <input src="https://res.cloudinary.com/grubhub/d_search:browse-images:default.jpg/dpr_auto,c_fill,w_124,h_124,f_auto,q_auto,g_auto/search/browse-images/noodles.jpg" type="image" class="cuisineRibbon-cuisine-image s-img-responsive u-rounded">
+                        {% csrf_token %}
+                        </form>
+                    </div>
+                    </div>
+                    <div class="u-text-primary caption u-stack-x-1 cuisineRibbon-cuisine-name ghs-cuisineRibbon-value">Noodles</div>
+                </div>
+            </div>
+            <div class="one_food_item">
+                <div class="one_food_content">
+                <div class="img-wrap">
+                    <div class="img-box">
+                        <form action="{% url 'food_search' %}" method='post'>
+                        <input type="hidden" value="Thai" name = "food_preference">
+                        <input src="https://res.cloudinary.com/grubhub/d_search:browse-images:default.jpg/dpr_auto,c_fill,w_124,h_124,f_auto,q_auto,g_auto/search/browse-images/thai.jpg" value="Thai" type="image" name = "food_preference" class="cuisineRibbon-cuisine-image s-img-responsive u-rounded">
+                        {% csrf_token %}
+                        </form>
+                    </div>
+                </div>
+                <div class="u-text-primary caption u-stack-x-1 cuisineRibbon-cuisine-name ghs-cuisineRibbon-value">Thai</div>
+            </div>
+            </div>
+            <div class="one_food_item">
+                <div class="one_food_content">
+                <div class="img-wrap">
+                    <div class="img-box">
+                      <form action="{% url 'food_search' %}" method='post'>
+                        <input type="hidden" value="Middle Eastern" name = "food_preference">
+                        <input src="https://res.cloudinary.com/grubhub/d_search:browse-images:default.jpg/dpr_auto,c_fill,w_124,h_124,f_auto,q_auto,g_auto/search/browse-images/middle-eastern.jpg" type="image" class="cuisineRibbon-cuisine-image s-img-responsive u-rounded">
+                        {% csrf_token %}
+                        </form>
+                    </div>
+                </div>
+                <div class="u-text-primary caption u-stack-x-1 cuisineRibbon-cuisine-name ghs-cuisineRibbon-value">Middle Eastern</div>
+            </div>
+        </div>
+    </div>
+          <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
+      </div>
+    </div>
+                <div class='top_5'>
+                  {% for places in places_list%}
+                  {% if places %}
+                    <div class='restaurant_info'>
+                        <a href='{{ places.url }}' target='_blank'><img src='{{ places.image_url }}' class='restaurant_img_container'></a>
+                        <h5><a href='{{ places.url }}' target='_blank'>{{ places.name }}</a></h5>
+                        <h6 class='restaurant_info_spacer'> 
+                          <div class="star-eval">
+                            <div id="bg">
+                              <div class="over" id="over_{{places.id}}"></div>
+                              <script>
+  　                            var x = {{places.rating}} * 12;
+                                var star = document.getElementById("over_{{places.id}}");
+                                star.style.width = x + 'px';
+                              </script>
+                            </div>
+                          <span> {{places.rating}}</span>
+                          </div>
+                        </h6>
+                        {% if places.price %}
+                            <h6 class='restaurant_info_spacer'>{{ places.review_count }} reviews - {{ places.price }}</h6>
+                        {% else %}
+                            <h6>{{ places.review_count }} reviews - Unavailable Price</h6>
+                        {% endif %}
+        
+                        {% if places.display_phone %}
+                            <h6 class='restaurant_info_spacer'>&nbsp<i class="fas fa-phone"></i>  {{ places.display_phone }}</h6>
+                        {% else %}
+                            <h6 class='restaurant_info_spacer'>Phone Number Unavilable</h6>
+                        {% endif %}
+                        {% if places.location.address1 %}
+                            <h6 class='restaurant_info_spacer'>&nbsp
+                            <i class="fas fa-map-marker-alt"></i> {{ places.location.address1 }}, {{ places.location.address2 }} {{ places.location.city }} {{ places.location.state }} {{ places.location.zip_code }}</h6>
+                        {% else %}
+                            <h6 class='restaurant_info_spacer'>Address Unavailable</h6>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% endfor%}
+                </div>
+        </div>
+
+{% endblock %}

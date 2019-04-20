@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>City Map</title>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #map {
+            float: left;
+            height: 100%;
+            width: 50%;
+        }
+        
+        #pano {
+            float: left;
+            height: 100%;
+            width: 50%;
+        }
+    </style>
+    <!-- jQuery + jQuery UI-->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css"/>
+    <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+    <!-- make div resizeable -->
+    <script type="text/javascript">
+        $('#pano').resizable({handles: 'n,w'});
+        $('#map').resizable({handles: 'n,w'});
+    </script>
+    {% load staticfiles %}
+    <script src="{% static 'virtualTravel/cityMap.js' %}" type="text/javascript"></script>
+</head>
+
+<body>
+    <div id="map"></div>
+    <div id="pano"></div>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFBOGeajHk9pGoEpyDMmgsTZZHQiHiySE&callback=initMap">
+    </script>
+</body>
+
+</html>

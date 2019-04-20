@@ -1,0 +1,8 @@
+Pittsburgh	Quiz of Pittsburgh	1	A	B	C	D
+Seattle	Quiz of Seattle	1	A	B	C	D
+Orlando	Quiz of Orlando	4	A	B	C	D
+New York City	Quiz of NYC	2	A	B
+Los Angeles	Quiz of LA	2	A	B
+Las Vegas	Quiz of Las Vegas	4	A	B	C	D
+Washington D.C.	Quiz of D.C.	2	A	B
+Chicago	Quiz of Chicago	2	A	B

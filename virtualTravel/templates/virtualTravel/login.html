@@ -1,0 +1,39 @@
+{% extends "virtualTravel/base.html" %}
+
+{% block nav-bar %}
+    <div class="nav-bar">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href=""><i class="fas fa-globe-americas"></i> Virtual Travel</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto"></ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" id="id_nav_travel_select" href="{% url 'register' %}"><i class="fas fa-user-plus"></i> Register</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <form method="post" action="{% url 'login' %}">
+        <table>
+            {% for field in form.visible_fields %}
+                <tr>
+                    <td>{{field.label_tag}}</td>
+                    <td>{{field}}</td>
+                </tr>
+                <td class="error">
+                    {% for error in form.errorlist %} {{error}} {% endfor %}
+                </td>
+            {% endfor %}
+        </table>
+        {% csrf_token %}
+        <button id="id_login_button" type="submit" class="btn btn-outline-primary">Login</button>
+    </form>
+{% endblock %}

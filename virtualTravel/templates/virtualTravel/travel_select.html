@@ -1,0 +1,34 @@
+{% extends "virtualTravel/base.html" %}
+
+{% block content %}
+
+{% if errorlist %}
+    {% for error in errorlist %}
+        <p class="errorlist">{{error}}</p>
+    {% endfor %}
+{% endif %}
+
+<form method="POST" action="/virtualTravel/travel">
+    <div class="form-group" style="width:300px;">
+    	<p class="font-weight-light">Select Your Departure City:</p>
+    	<select name="departure" class="form-control" id="departure-city">
+    		<option selected>Choose...</option>
+			{% for city in cities %}
+				<option value="{{city.name}}">{{city.name}}</option>
+			{% endfor %}
+    	</select>
+        <br>
+    	<p class="font-weight-light">Select Your Destination City:</p>
+    	<select name="destination" class="form-control" id="destination-city">
+    		<option selected>Choose...</option>
+			{% for city in cities %}
+				<option value="{{city.name}}">{{city.name}}</option>
+			{% endfor %}
+    	</select>
+    </div>
+
+	<button type="submit" class="btn btn-primary">Start Your Journey</button>
+	{% csrf_token %}
+</form>
+
+{% endblock %}
