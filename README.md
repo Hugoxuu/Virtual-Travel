@@ -12,7 +12,7 @@ It is a website that provides user with virtual travel experience (still working
     $ sudo apt-get update
     $ sudo apt-get install python3-pip
     $ sudo -H pip3 install --upgrade pip
-    $ sudo -H pip3 install django==2.1.5 ç Note: the	double	equals
+    $ sudo -H pip3 install django==2.1.5
     $ sudo reboot
     ```
 2. To run the website on your computer:
