@@ -23,5 +23,5 @@ cd Virtual-Travel/;
 ./dbinit.sh python3;
 python3 manage.py runserver;
 ```
-Browser:
-`Go To: http://127.0.0.1:8000/`
+3. Browser:
+```Go To: http://127.0.0.1:8000/```
