@@ -2,7 +2,7 @@
 
 {% block nav-bar %}
     <div class="nav-bar">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href=""><i class="fas fa-globe-americas"></i> Virtual Travel</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -21,19 +21,34 @@
 {% endblock %}
 
 {% block content %}
-    <form method="post" action="{% url 'login' %}">
-        <table>
-            {% for field in form.visible_fields %}
-                <tr>
-                    <td>{{field.label_tag}}</td>
-                    <td>{{field}}</td>
-                </tr>
-                <td class="error">
-                    {% for error in form.errorlist %} {{error}} {% endfor %}
-                </td>
-            {% endfor %}
-        </table>
-        {% csrf_token %}
-        <button id="id_login_button" type="submit" class="btn btn-outline-primary">Login</button>
-    </form>
+ <body class="background">
+ <div class="modal-dialog text-center">
+      <div class="col-sm-8 main-section">
+        <div class="modal-content">
+
+          <div class="col-12 user-img">
+            <img src="../../static/image/boy.png" alt="">
+          </div>
+
+          <form class="col-12" method="post" action="{% url 'login' %}">
+            <div class="form-group-input">
+              <i class="fas fa-user"></i><input id="id_username" name="username" class="form-control" placeholder="Username" {% if name_error %} value = "{{name_error}}" {% endif %}>
+            </div>
+            <div class="form-group-input">
+              <i class="fas fa-lock"></i><input type="password" id="id_password" name="password" class="form-control" placeholder="Password" {% if password_error %} value = "{{password_error}}" {% endif %}>
+            </div>
+            <td class="error">
+                    {% for error in form.non_field_errors %}
+                     <p class="errorlist">{{error}}<p>
+                    {% endfor %}
+            </td>      
+            <button id="id_login_button" type="submit" style="float: inherit" class="btn btn-primary btn1"><i class="fas fa-sign-in-alt"></i> Login</button>
+<!--             <a id="id_sign_up" class="btn btn-primary btn2" href="{% url 'register' %}"><i class="fas fa-user-plus"></i> Register</a>
+ -->            {% csrf_token %}
+          </form>
+          
+        </div>
+      </div>
+    </div>
+ </body>
 {% endblock %}

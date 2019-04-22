@@ -2,37 +2,33 @@
 
 {% block content %}
 <form action="{% url 'searchCity' %}" method="post">
-<div class="topnav">
-	<div class="input-group mb-3">
-	  <input type="text" class="form-control" name = "search" placeholder="Search city" aria-label="Recipient's username" aria-describedby="button-addon2">
-	  <div class="input-group-append">
-	    <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Button</button>
-	  </div>
-	</div>
+  <div class="topnav">
+    <div class="input-group mb-3">
+      <input type="text" class="form-control" name = "search" placeholder="Search city" aria-label="Recipient's username" aria-describedby="button-addon2">
+      <div class="input-group-append">
+        <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Search</button>
+      </div>
+    </div>
 </div>
 {% csrf_token %}
 </form>
-
 <div class="row">
   {% for city in citys %}
   <div class="col-md-3">
     <div class="card">
-    <img class = "city-img" src= {{city.picture_url}} class="card-img-top" alt="Responsive image">
+      <img class = "city-img" src= {{city.picture_url}} class="card-img-top" alt="Responsive image">
       <div class="card-body">
-
         <h5 class="card-title">{{city.name}}</h5>
         {% if city in city_pool %}
-         <button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#exampleModalCenter" disabled >Purchased</button>
-        {% endif %}
-    
+        <button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#exampleModalCenter" disabled >Purchased</button>
+        {% endif %}  
         {% if city not in city_pool %}
         {% if city.price <= mygold %}
-         <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#exampleModalCenter" onclick="myFunction(this.value)" value = "{{city.name}}">{{city.price}} <img id = "goldicon" src="../../static/image/smallgold.png" height="20px"></button>
+        <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#exampleModalCenter" onclick="myFunction(this.value)" value = "{{city.name}}">{{city.price}} <img id = "goldicon" src="../../static/image/smallgold.png" height="20px"></button>
         {% else %}
         <button class="btn btn-secondary" type="button" data-toggle="modal" data-target="#exampleModalCenter" value = "{{city.name}}" disabled>{{city.price}} <img id = "goldicon" src="../../static/image/smallgold.png" height="20px"></button>
         {% endif %}
         {% endif %}
-
       </div>
     </div>
   </div>
@@ -40,27 +36,27 @@
 </div>
 
 <form action="{% url 'buyCity' %}" method="post">
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalCenterTitle"><i class="fas fa-store"></i>City Store</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div class="modal-body">
-                  <h2>Are you sure to buy?</h2>
-                </div>
-                <div class="modal-footer">
-                    <button id = "buy_city_buttun" type="submit" class="btn btn-primary"  name = "city_name">Yes</button>
-                    <button type="submit" class="btn btn-secondary" data-dismiss="modal">NO</button>
-                </div>
-              </div>
-            </div>
-          </div>
-      {% csrf_token %}
-  </form>
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content" id="introcude">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalCenterTitle"><i class="fas fa-store"></i> City Store</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h2>Are you sure to buy?</h2>
+        </div>
+        <div class="modal-footer">
+          <button id = "buy_city_buttun" type="submit" class="btn btn-primary"  name = "city_name">YES</button>
+          <button type="submit" class="btn btn-secondary" data-dismiss="modal">NO</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% csrf_token %}
+</form>
 
 <script>
   function myFunction(a) {

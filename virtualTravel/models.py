@@ -54,6 +54,7 @@ class Profile(models.Model):
 class Travel(models.Model):
     num_of_stops = models.IntegerField() # number of stops in this trip
     current_stop = models.IntegerField(default=0) # indicates where this user is currently at
+    gold_earned = models.IntegerField(default=0)
     route = models.CharField(max_length=2000) # format: "city_id1 city_id2 city_id3"
     date = models.DateTimeField()
     made_by = models.ForeignKey(Profile,on_delete=models.CASCADE,related_name="past_travel")

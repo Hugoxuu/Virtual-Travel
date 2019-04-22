@@ -13,6 +13,7 @@ from django.utils.dateparse import parse_datetime
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import transaction
 
 from random import *
 import re
@@ -29,16 +30,37 @@ def login_action(request):
 
     # Just display the registration form if this is a GET request.
     if request.method == 'GET':
-        context['form'] = LoginForm()
+        # context['form'] = LoginForm()
         return render(request, 'virtualTravel/login.html', context)
+
+    form = LoginForm(request.POST)
+    context['form'] = form
 
     # Creates a bound form from the request POST parameters and makes the 
     # form available in the request context dictionary.
-    form = LoginForm(request.POST)
+
+    # if 'username' in request.POST:
+    #     username = request.POST['username']
+    # print(username)
+    # if 'password' in request.POST:
+    #     password = request.POST['password']
+    info = {
+        'username': request.POST['username'],
+        'password': request.POST['password']
+        }
+
+    if request.POST['username'] == "":
+        context['name_error'] = "Miss input name"
+    if request.POST['password'] == "":
+        context['password_error'] = "Miss password"
+        
+    form = LoginForm(info)
+
     context['form'] = form
 
     # Validates the form.
     if not form.is_valid():
+        print("not valid")
         return render(request, 'virtualTravel/login.html', context)
 
     new_user = authenticate(username=form.cleaned_data['username'],
@@ -61,11 +83,42 @@ def register_action(request):
 
     # Creates a bound form from the request POST parameters and makes the 
     # form available in the request context dictionary.
-    form = RegistrationForm(request.POST)
+
+
+    # form = RegistrationForm(request.POST)
+    # context['form'] = form
+    info = {
+        'username': request.POST['username'],
+        'password': request.POST['password'],
+        'confirm_password': request.POST['confirm_password'],
+        'email':request.POST['email']
+        }
+
+    if (request.POST['username'] == ""):
+        context['name_error'] = "Miss input name"
+
+    if (request.POST['password'] == ""):
+        context['password_error'] = "Miss password"
+
+    if (request.POST['confirm_password'] == ""):
+        context['confirm_password_error'] = "Miss confirm_password"
+
+    if (request.POST['email'] == ""):
+        context['email_error'] = "Miss email address"
+
+    try:
+        user = User.objects.get(username = request.POST['username'])
+        if user:
+            context['profile_error'] = "Already registered"
+    except:
+        pass
+
+    form = RegistrationForm(info)
     context['form'] = form
 
     # Validates the form.
     if not form.is_valid():
+        print("invalid form")
         return render(request, 'virtualTravel/register.html', context)
 
     # At this point, the form data is valid.  Register and login the user.
@@ -80,24 +133,26 @@ def register_action(request):
     # Create default profile for the user
     default_profile = Profile.objects.create(user=new_user,
                             bio='Hi, I am ' + new_user.username + '!')
+    
     #initialize city pool
     for free_city in City.objects.filter(price=0):
         default_profile.city_pool.add(free_city)
 
     # redirect to login page
     login(request, new_user)
-    return redirect(reverse('homepage'))
+    return redirect(reverse('homepage')+"?new=true")
 
 @login_required
 def travel_select_action(request):
     profile = request.user.profile
-
+    context = {}
     # The user is currently on a travel, redirect it to the travelling page
     if len(profile.current_travel.all()) > 0:
         return redirect(reverse('travel'))
-
+    if 'new' in request.GET:
+        context['new_user'] = True
     cities = list(profile.city_pool.all())
-    context = {'cities':cities}
+    context['cities']=cities
     return render(request, 'virtualTravel/travel_select.html', context)
 
 @login_required
@@ -108,9 +163,13 @@ def travel_action(request):
     cities = list(profile.city_pool.all())
     errorlist = []
 
+    if request.method  == 'GET':
+        context['current_page'] = 'list-City-list'  
+
     # Create a 'Travel' if this page is entered by clicking 'Start Journey'
     if request.method == 'POST':
         if 'departure' in request.POST:
+            context['current_page'] = 'list-City-list'
             departure = request.POST['departure']
             destination = request.POST['destination']
 
@@ -156,32 +215,6 @@ def travel_action(request):
                 current_travel = Travel(num_of_stops=len(route_str.split(' ')), current_stop=0, route=route_str,
                                          date=timezone.now(), made_by=profile, current_user=profile)
                 current_travel.save()
-
-        else:  # This travel page is servered upon user submitting quiz
-            current_travel = profile.current_travel.all()[0]
-            current_city_id = current_travel.route.split(' ')[current_travel.current_stop]
-            current_city_name = City.objects.get(id=current_city_id).name
-            quiz_set=Quiz.objects.filter(quiz_city=current_city_id).all()
-            current_quiz = quiz_set[randint(0,max(0,len(quiz_set))-1)]
-
-            if 'question' in request.POST: # checking quiz result
-                if request.POST['question'] == str(current_quiz.quiz_answer):
-                    context['result'] = 1
-                    if not profile in current_quiz.quiz_users.all():
-                        profile.gold+=100;
-                        profile.save()
-                        current_quiz.quiz_users.add(profile)
-                        context['quiz_result'] = "Good. The answer for "+current_city_name+" is correct! Now you have "+(str)(profile.gold)+" gold. \
-                        You have unlocked the next city. Enjoy it at Overview and City Exploration! "
-                    else:
-                        context['quiz_result'] = "Good. The answer for "+current_city_name+" is correct! But you had taken this quiz before. You cannot earn gold this time. Now you have unlocked the next city. Enjoy it at Overview and City Exploration!"
-                else:
-                    context['result'] = 0
-                    context['quiz_result'] = "Sad. The answer for "+current_city_name+" is wrong! Now you have "+(str)(profile.gold)+" gold."
-
-                # quiz completed move to next stop
-                current_travel.current_stop += 1
-                current_travel.save()
     
     # rendering city content and quiz no matter GET or POST        
     if len(profile.current_travel.all()) == 0:
@@ -200,6 +233,7 @@ def travel_action(request):
         profile.current_travel.clear()
         profile.save() # save() needs to be called after clear()
         context = {'cities':list(profile.city_pool.all())}
+        context['gold_earned']="Congratulations! You have finish the trip. Want to have your travel summary?"
         return render(request, 'virtualTravel/travel_select.html',context)
     
     route = routeParser(current_travel)
@@ -209,10 +243,22 @@ def travel_action(request):
     current_city = route[current_travel.current_stop]
     context['current_city'] = current_city
     quiz_set=Quiz.objects.filter(quiz_city=current_city).all()
-    context['quiz'] = quiz_set[randint(0,max(0,len(quiz_set))-1)]
-    context['current_page'] = 'list-City-list'
-    
+    current_quiz = quiz_set[randint(0,max(0,len(quiz_set))-1)]
+    context['quiz'] = current_quiz
+    if profile in current_quiz.quiz_users.all():
+        print("quiz already answered by this user")
+        context['quiz_answered'] = "true"
+    print(context)
     return render(request, 'virtualTravel/traveling.html',context)
+
+@login_required
+def next_city_action(request):
+    profile = request.user.profile
+    current_travel = profile.current_travel.all()[0]
+    current_travel.current_stop += 1
+    current_travel.save()
+    print("move to next city")
+    return redirect(reverse('travel'))
 
 @login_required
 def profile_action(request):
@@ -266,47 +312,7 @@ def store_action(request):
         return render(request, 'virtualTravel/citystore.html', context)
 
 
-@login_required
-def show_grades(request):
-    print("enter show_grades")
-    context = {}
-    if request.method == 'GET':
-        return render(request, 'virtualTravel/traveling.html', context)
-
-    user_profile=request.user.profile
-    if len(user_profile.current_travel.all())!=0:
-        current_travel=user_profile.current_travel.all()[0]
-
-    print("num_of_stops is "+(str)(current_travel.num_of_stops)) 
-    print("route is "+current_travel.route)     
-    if current_travel.current_stop>=current_travel.num_of_stops:
-        user_profile.current_travel.clear()
-    else:
-        current_travel.current_stop+=1 
-        current_travel.save() 
-        print("current_stop is "+(str)(current_travel.current_stop)) 
-        current_city=current_travel.route.split()[current_travel.current_stop-1]
-        current_city_id=re.findall(r"\d+\.?\d*",current_city)[0]
-        print("current city is "+current_city_id)
-        quiz = Quiz.objects.get(quiz_city=current_city_id)
-        print("quiz is "+quiz.quiz_text)
-        print("option 1 is "+quiz.quiz_option_1)
-        res = quiz.quiz_answer    
-        
-        print(request.POST)
-
-        if 'question' in request.POST:
-            if request.POST['question'] == str(res):
-                context['result'] = 1
-                context['quiz_result'] = "Good. The answer for City id="+current_city_id+" is correct!"
-            else:
-                context['result'] = 0
-                context['quiz_result'] = "Sad. The answer for City id="+current_city_id+" is wrong!"
-
-        context['quiz'] = quiz;
-
-    return render(request, 'virtualTravel/traveling.html', context)
-    
+@login_required  
 def searchCity_action(request):
     if request.method == 'GET':
         return store_action(request)
@@ -324,7 +330,8 @@ def searchCity_action(request):
 
     return render(request, 'virtualTravel/citystore.html', context)
 
-
+@login_required
+@transaction.atomic
 def buyCity_action(request):
      context = {}
      myPorfile = request.user.profile
@@ -360,7 +367,7 @@ def buyCity_action(request):
 
      return render(request, 'virtualTravel/citystore.html', context)
     
-    
+@login_required   
 def refresh_map(request):
     user_profile = request.user.profile
     if len(user_profile.current_travel.all()) == 0:
@@ -378,6 +385,7 @@ def refresh_map(request):
 
     return HttpResponse(response_text,content_type='application/json')
 
+@login_required
 def refresh_cityMap(request):
     user_profile = request.user.profile
     if len(user_profile.current_travel.all()) == 0:
@@ -398,10 +406,12 @@ def refresh_cityMap(request):
 
     return HttpResponse(response_text,content_type='application/json')
 
+@login_required
 def cityMap(request):
     context = {}
     return render(request, 'virtualTravel/cityMap.html', context)
 
+@login_required
 def get_photo(request):
     profile = get_object_or_404(Profile, user=request.user)
     # someone could have deleted the picture leaving the DB with a bad references.
@@ -417,6 +427,7 @@ def routeParser(travel):
         route.append(city)
     return route
 
+@login_required
 def user_upload(request):
     context = {}
 
@@ -512,11 +523,7 @@ def user_upload(request):
     print(context)
     return render(request, 'virtualTravel/user_upload.html', context)
 
-
-def ranking_action(request):
-    context={}
-    return render(request, 'virtualTravel/ranking.html', context)
-
+@login_required
 def foodPage_action(request):
     if request.method == 'GET':
         context = {}
@@ -526,10 +533,9 @@ def foodPage_action(request):
         current_city_id = int(routes[current_travel.current_stop])
         current_city = City.objects.get(id=current_city_id)
         context['current_city'] = current_city
-        print(current_city.name)
         return render(request, 'virtualTravel/food.html', context)
 
-
+@login_required
 def food_search_action(request):
     if request.method == 'POST':
         user_profile = request.user.profile
@@ -538,23 +544,16 @@ def food_search_action(request):
         current_city_id = int(routes[current_travel.current_stop])
         current_city = City.objects.get(id=current_city_id)
         arr= request.POST.getlist('food_preference')
-        print('food_preference')
-        print(arr)
         filters= ','.join(arr)
-        print (filters)
-        # request.session['search'] = request.POST['search']
         request.session['location_input'] = current_city.name
         request.session['search_results'] = query_api(filters, request.session['location_input'])
         return redirect(reverse('food_result'))
     else:
         return redirect(reverse('travel'))
-
+        
+@login_required
 def food_result_action(request):
     search_results = request.session['search_results']
-    # random=randint(1,20)
-    # print(random)
-    # search_results=search_results['businesses'][0]
-    # print(search_results)
     context = {
         'places_list': search_results
     }
@@ -566,8 +565,37 @@ def food_result_action(request):
     context['current_city'] = current_city
     context['current_page'] = 'list-Food-list'
 
-    # print(search_results)
     return render(request, 'virtualTravel/traveling.html', context)
 
+def check_quiz(request,id,choice):
+    profile = request.user.profile
+    current_quiz = Quiz.objects.get(id=id)
+    current_travel = profile.current_travel.all()[0]
 
+    gold = ""
+    if choice == current_quiz.quiz_answer :
+        if not profile in current_quiz.quiz_users.all():
+            profile.gold += 100;
+            current_travel.gold_earned += 100
+            profile.save()
+            current_travel.save()
+            current_quiz.quiz_users.add(profile)
+            gold = " You've been awarded 100 gold"
+        response = '<div class="alert alert-success" role="alert"> \
+                    <button type="button" class="close" data-dismiss="alert">&times;</button>\
+                    <strong>Well done!</strong> The answer is Correct!' + gold +'</div>'
+    else:
+        response = '<div class="alert alert-danger" role="alert">\
+                <button type="button" class="close" data-dismiss="alert">&times;</button>\
+                <strong>Oops!</strong> The answer is wrong!</div>'
+    return HttpResponse(response,content_type='text/plain')
+
+def check_last_city(request):
+    profile = request.user.profile
+    current_travel = profile.current_travel.all()[0]
+    if current_travel.current_stop + 1 == current_travel.num_of_stops:
+        return HttpResponse("true",content_type='text/plain')
+
+    else:
+        return HttpResponse("false",content_type='text/plain')
 

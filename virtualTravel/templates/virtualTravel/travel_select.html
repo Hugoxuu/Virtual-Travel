@@ -1,34 +1,61 @@
 {% extends "virtualTravel/base.html" %}
 
-{% block content %}
-
-{% if errorlist %}
-    {% for error in errorlist %}
-        <p class="errorlist">{{error}}</p>
-    {% endfor %}
+{% block script %}
+{% if new_user %}
+<script>
+    window.onload = function() {document.getElementById("id_help_button").click();}
+</script>
 {% endif %}
+{% endblock %}
 
-<form method="POST" action="/virtualTravel/travel">
-    <div class="form-group" style="width:300px;">
-    	<p class="font-weight-light">Select Your Departure City:</p>
-    	<select name="departure" class="form-control" id="departure-city">
-    		<option selected>Choose...</option>
-			{% for city in cities %}
-				<option value="{{city.name}}">{{city.name}}</option>
-			{% endfor %}
-    	</select>
-        <br>
-    	<p class="font-weight-light">Select Your Destination City:</p>
-    	<select name="destination" class="form-control" id="destination-city">
-    		<option selected>Choose...</option>
-			{% for city in cities %}
-				<option value="{{city.name}}">{{city.name}}</option>
-			{% endfor %}
-    	</select>
+{% block content %}
+<div class="row">
+    <div class="col-2">
+        <div class="list-group" id="list-tab" role="tablist">  
+            <button class="list-group-item list-group-item-action active" id='list-City-list' data-toggle="list" role="tab" aria-controls='City'><i class="fas fa-route"></i> Travel Select</button>
+            <button class="list-group-item list-group-item-action" disabled=""><i class="fas fa-map-marked-alt"></i>  Overview</button>
+            <button class="list-group-item list-group-item-action" disabled=""><i class="fas fa-street-view"> </i>  City Exploring</button>
+            <button class="list-group-item list-group-item-action" disabled=""><span id="sp"></span><i class="fas fa-utensils"> </i>  Taste</button>
+            <button class="list-group-item list-group-item-action" disabled=""><i class="fas fa-chevron-circle-right"> </i>  Next Stop</button>
+        </div>
     </div>
+    <div class="col-10">
+        <div class="tab-content" id="nav-tabContent"> 
+            <div class="tab-pane fade show active" id='list-City' role="tabpanel" aria-labelledby='list-City-list'>
+<!--                 <div class="jumbotron">
+                    <h1 class="text-center"><strong><i class="fas fa-globe-americas fa-2x"></i> <h1>Start Your Journey!</h1></strong></h1>
+                </div>
+                <div class="container-fluid"> -->
+                {% if errorlist %}
+                    {% for error in errorlist %}
+                        <p class="errorlist">{{error}}</p>
+                    {% endfor %}
+                {% endif %}
+                <form method="POST" action="/virtualTravel/travel">
+                    <div class="form-group" style="width:300px;">
+                        <p class="font-weight-light">Select Your Departure City:</p>
+                        <select name="departure" class="form-control" id="departure-city">
+                            <option selected>Choose...</option>
+                            {% for city in cities %}
+                                <option value="{{city.name}}">{{city.name}}</option>
+                            {% endfor %}
+                        </select>
+                        <br>
+                        <p class="font-weight-light">Select Your Destination City:</p>
+                        <select name="destination" class="form-control" id="destination-city">
+                            <option selected>Choose...</option>
+                            {% for city in cities %}
+                                <option value="{{city.name}}">{{city.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
 
-	<button type="submit" class="btn btn-primary">Start Your Journey</button>
-	{% csrf_token %}
-</form>
+                    <button type="submit" class="btn btn-primary">Start Your Journey</button>
+                    {% csrf_token %}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

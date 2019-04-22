@@ -18,7 +18,7 @@
 		{% block script %}
 		{% endblock %}
 		<!-- base CSS -->
- 		<link rel="icon" href="../../static/image/icon.ico"/> <!-- website icon -->
+ 		<link rel="icon" href="../../static/image/icon.png"/> <!-- website icon -->
 		<link href="{% static 'virtualTravel/base.css' %}" rel="stylesheet" type="text/css">
 		<title> {% block title %} Virtual Travel {% endblock %} </title>
 	</head>
@@ -41,13 +41,11 @@
 								<a class="nav-link" id="id_nav_user_upload" href="{% url 'user_upload' %}"><i class="fas fa-upload"></i> User Upload</a>
 							</li>
 
-							<li class="nav-item">
-								<a class="nav-link" id="id_nav_ranking" href="{% url 'user_ranking' %}"><i class="fas fa-trophy"></i> Ranking</a>
-							</li>
-
 						</ul>
 
             			<ul class="navbar-nav">
+            				<li class="nav-link" id="id_help_button" type="button" data-toggle="modal" data-target="#InstructionWindow"><i class="fas fa-question-circle"></i>
+            				</li>
 							<li class="nav-item dropdown">
 								<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							 	<i class="fas fa-user-alt"></i>  {{user.username}}
@@ -66,8 +64,42 @@
 							</li>	
 						</ul>
 					</div>
+				</nav>
 			</div>
-			{% endblock %}
+		{% endblock %}
+
+		<div class="modal fade" id="InstructionWindow" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="false">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 525px" role="document">
+              <div class="modal-content" id="introcude">
+                <div class="modal-header">
+                	<h2 class="modal-title">Instructions <i class="fas fa-question-circle"></i></h2>
+                	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    	<span aria-hidden="true">&times;</span>
+                  	</button>
+                </div>
+                <div class="modal-body">
+                	<p><i class="fas fa-globe-americas"></i> <b>Virtual Travel</b> takes you to a virtual travel !</p>
+                	<h4>How to start my travel?</h4>
+                	<p>Select one city as your depature, one city as your desination. 
+                		<br>Then the system will generate a travel route for you! Intermediate stops are randomly selected, for fun :-)
+                	</p>
+                	<h4>Why do I only have a few cities to travel?</h4>
+                	<p>Once you have enough gold, you can always go to <a href="{% url 'store' %}"><b>City Store</b></a> page to unlock more cities.</p>
+                	<h4>How to earn gold?</h4>
+                	<p>1. Take Quiz.
+                		<br>2. Contribute by uploading quiz or site in <a href="{% url 'user_upload' %}"><b>User Upload</b></a> page.
+                	</p>
+                	<h4>How to check out my account info?</h4>
+                	<p>Go to <a href="{% url 'profile' %}"><b>Profile</b></a> page. It should have everything you want to know.</p> 
+                	<h4>I got good ideas. How to contact you?</h4>
+                	<p>Welcome! Please email us: <a href="mailto: xxx@andrew.cmu.edu"><b>xxx@andrew.cmu.edu</b></a>.</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" data-dismiss="modal">OK</button>
+                </div>
+              </div>
+        	</div>
+   		 </div>
 
 		<div class="content">
 			{% block content %}

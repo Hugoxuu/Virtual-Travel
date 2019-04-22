@@ -13,7 +13,7 @@ function renderMap(response) {
     // console.log(response);
 
     var mapOptions = {
-        zoom: 11,
+        zoom: 13
     }
     var map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
@@ -102,7 +102,7 @@ function geocodeMarker(site, geocoder, map, panorama, infowindow) {
             google.maps.event.addListener(marker, 'click', function() {
                 infowindow.setContent(contentString)
                 infowindow.open(map, this);
-                map.setZoom(11.3);
+                // map.setZoom(13.5);
                 panorama.setPosition(location);
             });
 
@@ -116,8 +116,8 @@ function geocodeMarker(site, geocoder, map, panorama, infowindow) {
 function BackControl(controlDiv, map, location) {
     // Set CSS for the control border.
     var controlUI = document.createElement('div');
-    controlUI.style.backgroundColor = '#007bff';
-    controlUI.style.border = '2px solid #007bff';
+    controlUI.style.backgroundColor = 'rgb(73, 46, 65)';
+    controlUI.style.border = '2px solid rgb(73, 46, 65)';
     controlUI.style.borderRadius = '3px';
     controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
     controlUI.style.cursor = 'pointer';
@@ -128,6 +128,8 @@ function BackControl(controlDiv, map, location) {
 
     // Set CSS for the control interior.
     var controlText = document.createElement('div');
+    controlText.style.backgroundColor = 'rgb(73, 46, 65)';
+    controlText.style.borderRadius = '3px';
     controlText.style.color = '#fff';
     controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
     controlText.style.fontSize = '16px';

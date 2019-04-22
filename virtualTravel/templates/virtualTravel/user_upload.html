@@ -1,87 +1,93 @@
 {% extends "virtualTravel/base.html" %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="row flex-xl-nowrap">
-
-        <div class="col-12 col-md-6 col-xl-6 bd-sidebar">
-            <div class="form-group">
-                <p>Do you want to upload a quiz to challenge other players? </p>
-                <p>You can upload your quiz here:</p>
-                <form method="post" action="{% url 'user_upload' %}">
-                    <table>
-                        <tr>
-                            <td>City name: 
-                                <select name="quiz_city_name" required id="id_quiz_city_name" class="form-control" cols="40">
-                                    <option selected>Choose...</option>
-                                    {% for city in city_pool %}
-                                        <option value="{{city.name}}">{{city.name}}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                            <td class="error">
-                                {% for error in field.errors %} {{error}} {% endfor %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Quiz question: 
-                                <textarea name="quiz_text" required id="id_quiz_text" class="form-control" cols="40"></textarea>
-                            </td>
-                            <td class="error">
-                                {% for error in field.errors %} {{error}} {% endfor %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Option 1: 
-                                <input type="text" name="quiz_option_1" required id="id_quiz_option_1" class="form-control" cols="40">
-                            </td>
-                            <td class="error">
-                                {% for error in field.errors %} {{error}} {% endfor %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Option 2: 
-                                <input type="text" name="quiz_option_2" required id="id_quiz_option_2" class="form-control" cols="40">
-                            </td>
-                            <td class="error">
-                                {% for error in field.errors %} {{error}} {% endfor %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Option 3: 
-                                <input type="text" name="quiz_option_3" required id="id_quiz_option_3" class="form-control" cols="40">
-                            </td>
-                            <td class="error">
-                                {% for error in field.errors %} {{error}} {% endfor %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Option 4: 
-                                <input type="text" name="quiz_option_4" required id="id_quiz_option_4" class="form-control" cols="40">
-                            </td>
-                            <td class="error">
-                                {% for error in field.errors %} {{error}} {% endfor %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Quiz answer: 
-                                <select name="quiz_answer" required id="id_quiz_answer" class="form-control" cols="40">
-                                    <option selected>Choose...</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                </select>
-                            </td>
-                            <td class="error">
-                                {% for error in field.errors %} {{error}} {% endfor %}
-                            </td>
-                        </tr>
-                    </table>
-                    {% csrf_token %}
-                    <button id="id_user_quiz_upload_button" type="submit" class="btn btn-primary">Upload</button>
-                </form>
-            </div>
+<div class="row">
+  <div class="col-2">
+    <div class="list-group" id="list-tab" role="tablist">
+      <a class="list-group-item list-group-item-action active" id="list-quiz-list" data-toggle="list" href="#list-quiz" role="tab" aria-controls="quiz">Quiz Upload</a>
+      <a class="list-group-item list-group-item-action" id="list-site-list" data-toggle="list" href="#list-site" role="tab" aria-controls="site">City Site Upload</a>
+    </div>
+  </div>
+  <div class="col-8">
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active jumbotron" id="list-quiz" role="tabpanel" aria-labelledby="list-quiz-list" style="background-color: #e9ecef;color: black;padding: 1rem 2rem;width: 600px">
+            <h2 class="lead"><b>Upload your Quiz</b></h2>
+            <p class="lead">Do you want to upload a quiz to challenge other players?</p>
+            <hr>
+            <form method="post" action="{% url 'user_upload' %}">
+                <table>
+                    <tr>
+                        <td>City: 
+                            <select name="quiz_city_name" required id="id_quiz_city_name" class="form-control" cols="40">
+                                <option selected>Choose...</option>
+                                {% for city in city_pool %}
+                                    <option value="{{city.name}}">{{city.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td class="error">
+                            {% for error in field.errors %} {{error}} {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Question: 
+                            <textarea name="quiz_text" required id="id_quiz_text" placeholder="Quiz Description, e.g. 1+1?" class="form-control" cols="40"></textarea><br>
+                        </td>
+                        <td class="error">
+                            {% for error in field.errors %} {{error}} {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" name="quiz_option_1" required id="id_quiz_option_1" placeholder="Option 1" class="form-control" cols="40">
+                        </td>
+                        <td class="error">
+                            {% for error in field.errors %} {{error}} {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" name="quiz_option_2" required id="id_quiz_option_2" placeholder="Option 2" class="form-control" cols="40">
+                        </td>
+                        <td class="error">
+                            {% for error in field.errors %} {{error}} {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" name="quiz_option_3" required id="id_quiz_option_3" placeholder="Option 3" class="form-control" cols="40">
+                        </td>
+                        <td class="error">
+                            {% for error in field.errors %} {{error}} {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="text" name="quiz_option_4" required id="id_quiz_option_4" placeholder="Option 4" class="form-control" cols="40">
+                        </td>
+                        <td class="error">
+                            {% for error in field.errors %} {{error}} {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Answer: 
+                            <select name="quiz_answer" required id="id_quiz_answer" class="form-control" cols="40">
+                                <option selected>Choose...</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                            </select>
+                        </td>
+                        <td class="error">
+                            {% for error in field.errors %} {{error}} {% endfor %}
+                        </td>
+                    </tr>
+                </table>
+                {% csrf_token %}
+                <hr>
+                <div><button id="id_user_quiz_upload_button" type="submit" class="btn btn-primary">Upload</button></div>
+            </form>
 
             {% for error in quiz_form.non_field_errors %}
                 <p class="errorlist">
@@ -95,41 +101,40 @@
               </p>
             {% endif %}
         </div>
-
-        <main class="col-12 col-md-6 col-xl-6 py-md-12 pl-md-12 bd-content" 
-            role="main">
-            <div data-spy="scroll" data-target="#navbar-example2" data-offset="0">
-                <p>Do you want to share your site and add to our website? </p>
-                <p>You can upload your site and picture here:</p>
+        <div class="tab-pane fade jumbotron" id="list-site" role="tabpanel" aria-labelledby="list-site-list" style="background-color: #e9ecef;color: black;padding: 1rem 2rem;width: 600px">    
+                <h2 class="lead"><b>Upload your Site</b></h2>
+                <p class="lead">Do you want to share a site into a city that you have?</p>
+                <hr>
                 <form enctype="multipart/form-data" action="{% url 'user_upload' %}" method="post">
                     <table>
                         <tr>
-                            <td>Site Name: 
-                                <input type="text" name="name" required id="id_name" class="form-control" cols="40">
+                            <td>Site:
+                                <input type="text" name="name" required id="id_name" placeholder="Site Name" class="form-control" cols="40"><br>
                             </td>
                             <td class="error">
                                 {% for error in field.errors %} {{error}} {% endfor %}
                             </td>
                         </tr>
                         <tr>
-                            <td>Site Description: 
-                                <textarea name="description" required id="id_description" class="form-control" cols="40" rows="3"></textarea>
+                            <td>
+                                <textarea name="description" required id="id_description" placeholder="A Short Description of the Site" class="form-control" cols="40" rows="3"></textarea>
                             </td>
                             <td class="error">
                                 {% for error in field.errors %} {{error}} {% endfor %}
                             </td>
                         </tr>
                         <tr>
-                            <td>Site Picture URL:
-                                <input type="text" name="site_picture_url" required id="id_site_picture_url" class="form-control" cols="40"></td>
+                            <td>Picture:
+                                <input type="text" name="site_picture_url" required id="id_site_picture_url" placeholder="Picture URL" class="form-control" cols="40">
+                            </td>
                             <td class="error">
                                 {% for error in field.errors %} {{error}} {% endfor %}
                             </td>
                         </tr>
                         <tr>
-                            <td>Which city this site belongs to? 
+                            <td>Site City:
                                 <select name="city_name" required id="id_city_name" class="form-control" cols="40">
-                                    <option selected>Choose...</option>
+                                    <option selected>Choose:</option>
                                     {% for city in city_pool %}
                                         <option value="{{city.name}}">{{city.name}}</option>
                                     {% endfor %}
@@ -141,7 +146,7 @@
                         </tr>
                         {% csrf_token %}
                     </table>
-                    <button id="id_user_site_upload_button" type="submit" class="btn btn-primary">Upload</button>
+                    <hr><button id="id_user_site_upload_button" type="submit" class="btn btn-primary">Upload</button>
                     {% if site_message %}
                         <p class="errorlist">
                             {{site_message}}
@@ -149,7 +154,10 @@
                     {% endif %}
                 </form>
             </div>
-        </main>
+        </div>
+    </div>
+  </div>
+</div>
 
     </div>
 </div>

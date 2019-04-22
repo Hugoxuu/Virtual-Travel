@@ -136,7 +136,6 @@ def query_api(term, location):
         print(u'No businesses for {0} in {1} found.'.format(term, location))
         return
 
-    # business_id = businesses[0]['id']
     business_len = len(businesses)
     business_id_list = []
 
@@ -146,19 +145,9 @@ def query_api(term, location):
 
     for i in range(business_len_need):
             business_id_list.append(businesses[i]['id'])  
-
-    # print(u'{0} businesses found, querying business info ' \
-    #     'for the top result "{1}" ...'.format(
-    #         len(businesses), business_id))
-    # response = get_business(API_KEY, business_id)
-
     response_list = []
     for i in range(business_len_need):
         response_list.append(get_business(API_KEY, business_id_list[i]))
-    # print(response_list)
-
-    # print(u'Result for business "{0}" found:'.format(business_id))
-    # pprint.pprint(response, indent=2)
     return response_list
 
 
