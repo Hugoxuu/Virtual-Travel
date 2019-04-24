@@ -37,7 +37,6 @@ function rendermap(response) {
             provideRouteAlternatives: false,
             travelMode: 'DRIVING',
         }
-        console.log(directionsRequest.toString());
         calculateAndDisplayRoute(directionsRequest, map);
 
     } else

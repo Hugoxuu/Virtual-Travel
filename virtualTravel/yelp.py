@@ -57,7 +57,7 @@ BUSINESS_PATH = '/v3/businesses/'  # Business ID will come after slash.
 # Defaults for our simple example.
 DEFAULT_TERM = 'dinner'
 DEFAULT_LOCATION = 'San Francisco, CA'
-SEARCH_LIMIT = 6
+SEARCH_LIMIT = 8
 
 
 def request(host, path, api_key, url_params=None):
@@ -139,13 +139,19 @@ def query_api(term, location):
     business_len = len(businesses)
     business_id_list = []
 
+    # Find the business, if large than 6, just show 6
     business_len_need = business_len
-    if business_len >= 6:
-        business_len_need = 6
+    if business_len >= SEARCH_LIMIT:
+        business_len_need = SEARCH_LIMIT
 
+    # Get business id list
     for i in range(business_len_need):
-            business_id_list.append(businesses[i]['id'])  
+            business_id_list.append(businesses[i]['id']) 
+
+    # Initial response list
     response_list = []
+
+    # Get response list 
     for i in range(business_len_need):
         response_list.append(get_business(API_KEY, business_id_list[i]))
     return response_list

@@ -54,7 +54,7 @@
 
 		<main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" 
 			role="main">
-			<div data-spy="scroll" data-target="#navbar-example2" data-offset="0">
+			<div class="jumbotron" style="background-color: white;color: black;padding: 1rem 2rem;" data-spy="scroll" data-target="#navbar-example2" data-offset="0">
 				<h2 class = "font-weight-bold" ><i class="fas fa-atlas"></i> Travel History</h2>
 				{% if travels %}
 					<div class="row">
@@ -89,7 +89,7 @@
 					</li>
 				{% endif %}
 				<br><br>
-				<h2 class = "font-weight-bold" ><i class="fas fa-piggy-bank"></i> City Pool </h2>
+				<h2 class = "font-weight-bold"><i class="fas fa-piggy-bank"></i> City Collection </h2>
 
 				{% if cities %}
 					<div class="row">
@@ -110,8 +110,7 @@
 					</div>
 				{% else %}
 					<li class = "li_style">
-						You do not have any cities.<br>
-						<a href="{% url 'store' %}">Unlock cities</a>
+						You haven't been to any cities.<br>
 					</li>
 				{% endif %}
 			</div>

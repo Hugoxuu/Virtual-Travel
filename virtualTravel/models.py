@@ -12,16 +12,6 @@ class City(models.Model):
     def __str__(self):
         return 'City(id=' + str(self.id) + '), ' + self.name
 
-# City Pictures
-class Picture(models.Model):
-    image = models.FileField()
-    content_type = models.CharField(max_length=50)
-    city = models.ForeignKey(City, on_delete=models.PROTECT)
-
-    def __str__(self):
-        return 'Picture(id=' + str(self.id) + ') of city ' + self.city.name
-
-
 # City Sites
 class Site(models.Model):
     name = models.CharField(max_length=50)

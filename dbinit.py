@@ -1,17 +1,12 @@
 from virtualTravel.models import *
 from django.contrib.auth.models import User
 
-# Create super user "admin|1234"
-User.objects.filter(is_superuser=True).delete()
-
-User.objects.create_superuser('admin', 'admin@example.com', '1234')
-
-# Add cities
+# Clean Up Database
 Site.objects.all().delete()
 Quiz.objects.all().delete()
 City.objects.all().delete()
 
-# Add cities
+# Import city data to DB
 with open('CityInfo/Cities.txt','r') as cities:
 	for city in cities:
 		fields = city.split('\t')
@@ -24,7 +19,7 @@ with open('CityInfo/Cities.txt','r') as cities:
 		new_city.description = description
 		new_city.save()
 
-# Add sites
+# Import site data to DB
 with open('SiteInfo/Sites.txt','r') as sities:
 	for site in sities:
 		fields = site.split('\t')
@@ -38,7 +33,7 @@ with open('SiteInfo/Sites.txt','r') as sities:
 		new_site.description = description
 		new_site.save()
 
-# Add quizzes
+# Import quiz data to DB
 with open('CityInfo/QuizQs.txt','r') as quizQs:
 	for quizQ in quizQs:
 		fields = quizQ.split('\t')
@@ -46,7 +41,6 @@ with open('CityInfo/QuizQs.txt','r') as quizQs:
 		new_question = Quiz(quiz_text=fields[1],quiz_city=quiz_city,
 							quiz_answer=int(fields[2]),
 							quiz_option_1=fields[3],quiz_option_2=fields[4])
-		
 		try:
 			new_question.quiz_option_3=fields[5]
 		except: # doesn't have option3
@@ -57,3 +51,13 @@ with open('CityInfo/QuizQs.txt','r') as quizQs:
 			pass
 		finally:
 			new_question.save()
+
+# Create super user "username: admin | password: 1234"
+User.objects.filter(is_superuser=True).delete()
+User.objects.create_superuser('admin', 'admin@example.com', '1234')
+super_user = User.objects.get(username='admin')
+profile = Profile.objects.create(user=super_user, gold=999,
+                            bio='Hi, I am admin !')
+for free_city in City.objects.filter(price=0):
+	#initialize the city pool for super user
+    profile.city_pool.add(free_city)

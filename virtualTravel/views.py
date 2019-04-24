@@ -18,37 +18,35 @@ from django.db import transaction
 from random import *
 import re
 import json
-
 from virtualTravel.yelp import *
 
-# Create your views here.
+
+import urllib.request
+import time
+
+
 def homepage(request):
     return redirect(reverse('homepage'))
 
+# login_action: render login page
 def login_action(request):
     context = {}
 
     # Just display the registration form if this is a GET request.
     if request.method == 'GET':
-        # context['form'] = LoginForm()
+        context['form'] = LoginForm()
         return render(request, 'virtualTravel/login.html', context)
 
     form = LoginForm(request.POST)
     context['form'] = form
 
     # Creates a bound form from the request POST parameters and makes the 
-    # form available in the request context dictionary.
-
-    # if 'username' in request.POST:
-    #     username = request.POST['username']
-    # print(username)
-    # if 'password' in request.POST:
-    #     password = request.POST['password']
     info = {
         'username': request.POST['username'],
         'password': request.POST['password']
         }
 
+    # If no username or no password, set error message
     if request.POST['username'] == "":
         context['name_error'] = "Miss input name"
     if request.POST['password'] == "":
@@ -84,9 +82,7 @@ def register_action(request):
     # Creates a bound form from the request POST parameters and makes the 
     # form available in the request context dictionary.
 
-
-    # form = RegistrationForm(request.POST)
-    # context['form'] = form
+    # Get registration from information
     info = {
         'username': request.POST['username'],
         'password': request.POST['password'],
@@ -94,6 +90,7 @@ def register_action(request):
         'email':request.POST['email']
         }
 
+    # Set the error message if mal input
     if (request.POST['username'] == ""):
         context['name_error'] = "Miss input name"
 
@@ -173,12 +170,11 @@ def travel_action(request):
             departure = request.POST['departure']
             destination = request.POST['destination']
 
-            # User is currently not a travel
+            # User is currently not on a travel 
             if len(profile.current_travel.all()) == 0:
                 # Error Handling
                 if departure == 'Choose...' or destination == 'Choose...':
                     errorlist.append('Please Select Cities for Departure and Destination')
-
                 # Generating routes for the travel
                 route = []
                 departure_id = -1
@@ -205,20 +201,22 @@ def travel_action(request):
                     num_of_stops = len(cities)
                 stops = sample(cities, num_of_stops)
 
-                # Transfer the route into String formate
+                # Transfer the route into String format
                 route_str = str(departure_id) + ' '
                 for city in stops:
                     route_str += str(city.id) + ' '
                 route_str += str(destination_id)
 
                 # Create the 'current travel' object from the generated route
-                current_travel = Travel(num_of_stops=len(route_str.split(' ')), current_stop=0, route=route_str,
-                                         date=timezone.now(), made_by=profile, current_user=profile)
-                current_travel.save()
+                if len(errorlist) == 0: 
+                    current_travel = Travel(num_of_stops=len(route_str.split(' ')), current_stop=0, route=route_str,
+                                             date=timezone.now(), made_by=profile, current_user=profile)
+                    current_travel.save()
     
     # rendering city content and quiz no matter GET or POST        
     if len(profile.current_travel.all()) == 0:
-        errorlist.append('This user has not started a travel.')
+        context = {'cities':list(profile.city_pool.all()), 'errorlist': errorlist}
+        return render(request, 'virtualTravel/travel_select.html', context)
     else:
         current_travel = profile.current_travel.all()[0]
 
@@ -229,11 +227,20 @@ def travel_action(request):
 
     # check if travel finished
     if current_travel.current_stop >= current_travel.num_of_stops:
-        print("All cities have been visited. Travel archived.\n")
+        cities = current_travel.route.split(" ")
+        collected = []
+        for city_id in cities:
+            city = City.objects.get(id=city_id)
+            if city not in profile.city_collection.all():
+                collected.append(city.name)
+                profile.city_collection.add(city)
+
         profile.current_travel.clear()
         profile.save() # save() needs to be called after clear()
         context = {'cities':list(profile.city_pool.all())}
-        context['gold_earned']="Congratulations! You have finish the trip. Want to have your travel summary?"
+        context["collected"]=collected
+        context["gold"]=current_travel.gold_earned
+        context["finished"]=True
         return render(request, 'virtualTravel/travel_select.html',context)
     
     route = routeParser(current_travel)
@@ -248,7 +255,17 @@ def travel_action(request):
     if profile in current_quiz.quiz_users.all():
         print("quiz already answered by this user")
         context['quiz_answered'] = "true"
-    print(context)
+
+
+    current_city_sites=Site.objects.filter(city=current_city)
+    context['current_city_sites']=current_city_sites
+    print("current_city_sites are: ")
+    for site in current_city_sites:
+        print(site.name+" id: "+(str)(site.id))
+    first_site_id = current_city_sites[0].id
+    print("first site id is "+(str)(first_site_id))
+    context['first_site_id']=first_site_id
+    
     return render(request, 'virtualTravel/traveling.html',context)
 
 @login_required
@@ -266,7 +283,7 @@ def profile_action(request):
 
     profile = request.user.profile
 
-    cities = list(profile.city_pool.all())
+    cities = list(profile.city_collection.all())
 
     if len(cities) >= 0:
         context['cities'] = cities
@@ -274,7 +291,7 @@ def profile_action(request):
     else:
         context['percentage'] = 0
 
-    travels = Travel.objects.filter(made_by=request.user.profile)
+    travels = Travel.objects.filter(made_by=request.user.profile, current_user=None)
     if len(travels) >= 0:
         context['travels'] = travels
         context['routes'] = []
@@ -297,72 +314,77 @@ def profile_action(request):
 
     return render(request, 'virtualTravel/profile.html', context)
 
+# Get city store page.
 @login_required
 def store_action(request):
     context = {}
     if request.method == 'GET':
-        citys = City.objects.filter(price__gt = 0)
+        # Filter city that price large than 0
+        citys = City.objects.filter(price__gt=0)
         context['citys'] = citys
-        myPorfile = request.user.profile
-        gold = myPorfile.gold
+        myProfile = request.user.profile
+        gold = myProfile.gold
         context['mygold'] = gold
-        city_pool = myPorfile.city_pool.all()
+        city_pool = myProfile.city_pool.all()
         context['city_pool'] = city_pool
 
         return render(request, 'virtualTravel/citystore.html', context)
 
-
+# Search city to buy.
 @login_required  
 def searchCity_action(request):
+    # If get request
     if request.method == 'GET':
         return store_action(request)
-    myPorfile = request.user.profile
+    # If post request
+    myProfile = request.user.profile
     context = {}
     if 'search' in request.POST:
         city_name = request.POST['search']
-
-        city = City.objects.filter(name__contains = city_name)
+        # rough search
+        city = City.objects.filter(name__contains = city_name, price__gt = 0)
         context['citys'] = city
-        gold = myPorfile.gold
+        gold = myProfile.gold
         context['mygold'] = gold
-        city_pool = myPorfile.city_pool.all()
+        city_pool = myProfile.city_pool.all()
         context['city_pool'] = city_pool
 
     return render(request, 'virtualTravel/citystore.html', context)
 
+# Buy cities
 @login_required
-@transaction.atomic
 def buyCity_action(request):
      context = {}
-     myPorfile = request.user.profile
+     myProfile = request.user.profile
+     # If method is get, show cities gold large than 0
      if request.method == 'GET':
         citys = City.objects.filter(price__gt = 0)
         context['citys'] = citys
-        gold = myPorfile.gold
+        gold = myProfile.gold
         context['mygold'] = gold
-        city_pool = myPorfile.city_pool.all()
+        city_pool = myProfile.city_pool.all()
         context['city_pool'] = city_pool
         return render(request, 'virtualTravel/citystore.html', context)
 
+    # post method 
      if 'city_name' in request.POST:
-        # compute the balance
-        print(request.POST['city_name'])
-        city = City.objects.get(name = request.POST['city_name'])
-        print(city.price)
+        try:
+            city = City.objects.get(name = request.POST['city_name'])
+            if myProfile.gold < city.price:
+                pass
+            else:
+                # Compute the balance if user buy the city
+                goldChange(myProfile, -city.price)
+                myProfile.city_pool.add(city)
+                myProfile.save()
+        except:
+            pass
 
-        if myPorfile.gold < city.price:
-            print("less")
-            print(myPorfile.gold)
-        else:
-            myPorfile.gold -= city.price
-            print(myPorfile.gold)
-            myPorfile.city_pool.add(city)
-            myPorfile.save()
      citys = City.objects.filter(price__gt = 0)
      context['citys'] = citys
-     gold = myPorfile.gold
+     gold = myProfile.gold
      context['mygold'] = gold
-     city_pool = myPorfile.city_pool.all()
+     city_pool = myProfile.city_pool.all()
      context['city_pool'] = city_pool
 
      return render(request, 'virtualTravel/citystore.html', context)
@@ -447,22 +469,36 @@ def user_upload(request):
         context['site_form'] = UserUploadForm_site()
         return render(request, 'virtualTravel/user_upload.html', context)
 
-    # ************************** upload quiz ************************************
+    # ************************** Upload quiz ******************************** #
     if 'quiz_city_name' in request.POST:
-        print("upload quiz")
         upload_city_name=request.POST['quiz_city_name'].strip()
-        print("in request.POST quiz_city_name is "+upload_city_name+'a')
-        print(upload_city_name=='Chicago')
+
+        # Malformed Input Handling
+        if 'quiz_city_name' == 'Choose...':
+            context['quiz_message']="Please select a city for the quiz."
+            return render(request, 'virtualTravel/user_upload.html', context)
+        if 'quiz_answer' not in request.POST:
+            context['quiz_message']="Please select an answer for the quiz."
+            return render(request, 'virtualTravel/user_upload.html', context)
+
+        try:
+            quiz_answer_int = int(request.POST['quiz_answer'])
+            if quiz_answer_int < 1 or quiz_answer_int > 4:
+                context['quiz_message']="Please select a valid answer for the quiz."
+                return render(request, 'virtualTravel/user_upload.html', context)
+        except:
+            context['quiz_message']="Please choose a valid answer for the quiz."
+            return render(request, 'virtualTravel/user_upload.html', context)
+
         try:
             find_city = City.objects.get(name = upload_city_name)
         except:
-            context['quiz_message']="This city is not supported."
+            context['quiz_message']="Please select a valid city."
             return render(request, 'virtualTravel/user_upload.html', context)
-        print("find_city is "+find_city.name)
 
         # Check whether input city is valid
         if not find_city in user_city_pool.all():
-            context['quiz_message']="You have no access to this city since it's not in your city pool."
+            context['quiz_message']="Please select a valid city."
             return render(request, 'virtualTravel/user_upload.html', context)
 
         # Get the input data and save the quiz in database
@@ -475,54 +511,73 @@ def user_upload(request):
                         quiz_answer=request.POST['quiz_answer'])
         new_quiz.save()
 
-        print('city name is '+new_quiz.quiz_city.name+', answer is '+new_quiz.quiz_answer)
-        context['quiz_message']="uploading quiz succeed!"
-    # *****************************************************************************
+        context['quiz_message']='Upload Quiz Successful! You earned 50 gold!'
+        context['success'] = True
+        goldChange(user_profile, 50) # add 50 gold to the user account
+
+    # *********************************************************************** #
 
 
-    # ************************** upload site ************************************
+    # ************************** Upload site ******************************** #
     if 'city_name' in request.POST:
-        print("upload site")
         upload_site_name=request.POST['name'].strip()
         upload_site_city=request.POST['city_name'].strip()
-        print("in request.POST site_city_name is "+upload_site_name+'a')
-        print(upload_site_name=='greenfield')
 
         # user can only upload picture to new site
-        print("now have sites: ")
         for site in Site.objects.all():
-            print(site.name)
             if site.name == upload_site_name:
-                print("this site already exists")
                 context['site_message']="This site exists already. Please upload a new site."
                 return render(request, 'virtualTravel/user_upload.html', context)
-        print(" ")
 
         try:
             find_site_city = City.objects.get(name = upload_site_city)
         except:
-            context['site_message']="This city is not supported."
+            context['site_message']="Please select a valid city."
             return render(request, 'virtualTravel/user_upload.html', context)
-        print("find_site_city is "+find_site_city.name)
 
         # Check whether input city is valid
         if not find_site_city in user_city_pool.all():
-            context['site_message']="You have no access to this city since it's not in your city pool."
+            context['site_message']="Please select a valid city."
             return render(request, 'virtualTravel/user_upload.html', context)
 
-        # Get the input site data and save the site in database
+        # Check url is active
+        if not checkurl(request.POST['site_picture_url']):
+            context['site_message'] = "Upload failed. Invalid image url."
+            return render(request, 'virtualTravel/user_upload.html', context)
+
+
+        # Get the input site data and save the site in database 
         new_site = Site(name=upload_site_name,
                         description=request.POST['description'], 
                         picture_url=request.POST['site_picture_url'],
                         city=find_site_city)
         new_site.save()
 
-        print('site name is '+new_site.name)
-        context['site_message']="uploading site '"+new_site.name+"' succeed!"
-    # *****************************************************************************
-    print(context)
+        context['site_message']="Upload site '"+new_site.name+"' Successful! You earned 50 gold!"
+        goldChange(user_profile, 50) # add 50 gold to the user account
+        context['success'] = True
+    # *********************************************************************** #
+    
     return render(request, 'virtualTravel/user_upload.html', context)
 
+# check upload url is correct
+def checkurl(url):
+    # Try to open the url
+    if re.match(r'(((http|ftp|https)://)?)',url, re.M|re.I):
+        return False
+    opener = urllib.request.build_opener()
+    opener.addheaders = [('User-agent', 'Mozilla/49.0.2')]
+    try :
+        opener.open(url)    
+        return re.match( r'(.+?.(?:bmp|jpg|png|gif|jpeg))', url, re.M|re.I)
+    except urllib.error.HTTPError:
+        time.sleep(2)
+        return False
+    except urllib.error.URLError:
+        time.sleep(2)
+        return False
+
+# Show the food page
 @login_required
 def foodPage_action(request):
     if request.method == 'GET':
@@ -535,6 +590,7 @@ def foodPage_action(request):
         context['current_city'] = current_city
         return render(request, 'virtualTravel/food.html', context)
 
+# Search the food
 @login_required
 def food_search_action(request):
     if request.method == 'POST':
@@ -550,7 +606,8 @@ def food_search_action(request):
         return redirect(reverse('food_result'))
     else:
         return redirect(reverse('travel'))
-        
+
+# Show the food search result        
 @login_required
 def food_result_action(request):
     search_results = request.session['search_results']
@@ -575,7 +632,7 @@ def check_quiz(request,id,choice):
     gold = ""
     if choice == current_quiz.quiz_answer :
         if not profile in current_quiz.quiz_users.all():
-            profile.gold += 100;
+            goldChange(profile, 100)
             current_travel.gold_earned += 100
             profile.save()
             current_travel.save()
@@ -598,4 +655,9 @@ def check_last_city(request):
 
     else:
         return HttpResponse("false",content_type='text/plain')
+
+@transaction.atomic
+def goldChange(profile, change):
+    profile.gold += change
+    profile.save()
 

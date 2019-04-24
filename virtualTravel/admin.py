@@ -4,7 +4,6 @@ from django.contrib import admin
 from .models import *
 admin.site.register(City)
 admin.site.register(Quiz)
-admin.site.register(Picture)
 admin.site.register(Travel)
 admin.site.register(Profile)
 admin.site.register(Site)

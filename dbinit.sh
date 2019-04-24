@@ -3,6 +3,9 @@ if [ "$#" -ne 1 ]; then
   exit 1
 fi
 PYTHON="$1"
-$PYTHON manage.py makemigrations
-$PYTHON manage.py migrate
-$PYTHON manage.py shell < dbinit.py
+rm db.sqlite3;
+
+$PYTHON manage.py makemigrations;
+$PYTHON manage.py migrate;
+$PYTHON manage.py shell < dbinit.py;
+$PYTHON manage.py runserver;
