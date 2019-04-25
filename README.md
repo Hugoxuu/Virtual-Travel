@@ -10,6 +10,7 @@ This project is under the instruction of Prof. Jeff Eppinger and TAs from CMU-17
 2. Python, Javascript, HTML, CSS
 3. Google Maps API, Yelp API
 
+<<<<<<< HEAD
 ## How to Set Up? (On Linux or mac Terminal)
 1. Make sure you have django and python installed:
     ```
@@ -25,11 +26,28 @@ This project is under the instruction of Prof. Jeff Eppinger and TAs from CMU-17
     $ cd Virtual-Travel/;
     $ ./dbinit.sh python3;
     $ python3 manage.py runserver;
+=======
+## How to Set Up? (On Linux & mac Terminal)
+1. Make sure you have django and python installed:
+    ```
+    $ sudo apt-get update
+    $ sudo apt-get install python3-pip
+    $ sudo -H pip3 install --upgrade pip
+    $ sudo -H pip3 install django==2.1.5
+    $ sudo reboot
+    ```
+2. To setup the website server on your computer:
+    ```
+    $ git clone https://github.com/Hugoxuu/Virtual-Travel;
+    $ cd Virtual-Travel/;
+    $ ./dbinit.sh python3; # [python3] - your python version
+>>>>>>> bd2ef9532b9ddb8c6ba0663421726e2224e1673d
     ```
 3. Browser:
     ```
     http://127.0.0.1:8000/
     ```
+<<<<<<< HEAD
 
 ### References
 1. *[Google My Maps API](https://www.google.com/earth/outreach/learn/visualize-your-data-on-a-custom-map-using-google-my-maps/#embed_your_map)
@@ -38,3 +56,5 @@ This project is under the instruction of Prof. Jeff Eppinger and TAs from CMU-17
 4. *[Bootstrap 4](https://getbootstrap.com/)
 5. *[jQuery](https://jquery.com/)
 6. *[Background Canvas Effect](https://github.com/sunshine940326/canvas-nest)
+=======
+>>>>>>> bd2ef9532b9ddb8c6ba0663421726e2224e1673d
