@@ -1,7 +1,7 @@
 # Virtual-Travel
 It is a website that provides user with virtual travel experience. [Visit our website](http://100.24.61.190)!
 
-## About the project
+## About the Project
 We are a team of four (Lijuan Shen, Yan Pan, Yi He, Zeyuan Xu). <br>
 This project is under the instruction of Prof. Jeff Eppinger and TAs from CMU-17437-SP19.
 
@@ -9,22 +9,6 @@ This project is under the instruction of Prof. Jeff Eppinger and TAs from CMU-17
 1. Django Web Framework, Bootstrap
 2. Python, Javascript, HTML, CSS
 3. Google Maps API, Yelp API
-
-## How to Set Up? (On Linux or mac Terminal)
-1. Make sure you have django and python installed:
-    ```
-    $ sudo apt-get update;
-    $ sudo apt-get install python3-pip;
-    $ sudo -H pip3 install --upgrade pip;
-    $ sudo -H pip3 install django==2.1.5;
-    $ sudo reboot;
-    ```
-2. To run the website on your computer:
-    ```
-    $ git clone https://github.com/Hugoxuu/Virtual-Travel;
-    $ cd Virtual-Travel/;
-    $ ./dbinit.sh python3;
-    $ python3 manage.py runserver;
 
 ## How to Set Up? (On Linux & mac Terminal)
 1. Make sure you have django and python installed:
