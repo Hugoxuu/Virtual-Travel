@@ -1,18 +1,18 @@
 var map;
 
 function initMap(directionsRequest) {
-    document.getElementById('map').style.display = 'none';
+    document.getElementById('profile_map').style.display = 'none';
 }
 
 function updateMap(response) {
     // The map
     map = new google.maps.Map(
-        document.getElementById('map'), {
+        document.getElementById('profile_map'), {
             zoom: 4, center: {
                 lat: 40.462507, lng: -98.746465
             }});
 
-    if (document.getElementById('map').style.display == 'none') {
+    if (document.getElementById('profile_map').style.display == 'none') {
         document.getElementById("toggleMap" + response).innerHTML = "Open the Map";
     } else {
         document.getElementById("toggleMap" + response).innerHTML = "Close the Map";
@@ -21,7 +21,6 @@ function updateMap(response) {
     var route = document.getElementById("list-" + response).getAttribute('name');
     var splitRoute = route.split(",");
     splitRoute.pop();
-    console.log(splitRoute);
     // route display
     var waypoints = [];
     var departureCity = "";
@@ -75,11 +74,11 @@ function calculateAndDisplayRoute(directionsRequest, map) {
 }
 
 function toggleMap(id) {
-    if (document.getElementById('map').style.display == 'none') {
-        document.getElementById('map').style.display = 'inherit';
+    if (document.getElementById('profile_map').style.display == 'none') {
+        document.getElementById('profile_map').style.display = 'inherit';
         document.getElementById("toggleMap" + id).innerHTML = "Close the Map";
     } else {
-        document.getElementById('map').style.display = 'none';
+        document.getElementById('profile_map').style.display = 'none';
         document.getElementById("toggleMap" + id).innerHTML = "Open the Map";
     }   
 }

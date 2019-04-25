@@ -2,72 +2,75 @@
 
 {% block content %}
 <div class="container-fluid">
-	<div class="row flex-xl-nowrap">
-		<div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+	<div class="row">
+		<div class="col-sm-1"></div>
+		<div class="col-sm-2" style="font-size: 14px">
+			<div class="card" style="margin: 0px; width: 100%;">
 			<form enctype="multipart/form-data" action="{% url 'profile'%}" method="POST">
-				<div class="card" style="width: 15rem;">
-					<div class="card-header">
-						<i class="fas fa-user-alt"></i> {{user.username}}
-					</div>
+				<div class="card-header">
+					<i class="fas fa-user-alt"></i> {{user.username}}
+				</div>
 
-					{% if profile.picture %}
+				{% if profile.picture %}
 					<img src="{% url 'photo'%}" class="card-img-top" alt="...">
-					{% else %}
+				{% else %}
 					<img src="../../static/image/image-default.png" class="card-img-top" alt="...">
-					{% endif %}
+				{% endif %}
 
-					<div class="custom-file">
-						<input type="file" name="picture" id="id_picture" class="custom-file-input" id="customFile">
-						<label class="custom-file-label" for="customFile">Update Avatar</label>
-					</div>
-					<script>
-						// Add the following code if you want the name of the file appear on select
-						$(".custom-file-input").on("change", function() {
-						var fileName = $(this).val().split("\\").pop();
-						$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-						});
-					</script>
+				<div class="custom-file">
+					<input type="file" name="picture" id="id_picture" class="custom-file-input" id="customFile">
+					<label class="custom-file-label" for="customFile">Upload Avatar</label>
+				</div>
+				<script>
+					// Add the following code if you want the name of the file appear on select
+					$(".custom-file-input").on("change", function() {
+					var fileName = $(this).val().split("\\").pop();
+					$(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+					});
+				</script>
 
-					<ul class="list-group list-group-flush"><li class="list-group-item">
+				<ul class="list-group list-group-flush">
+					<li class="list-group-item">
 						{{form.bio}}
-					</li></ul>
+					</li>
+				</ul>
 
-					<ul class="list-group list-group-flush"><li class="list-group-item">
-						<img id = "goldicon" src="../../static/image/smallgold.png" width="20px" height="20px"> {{profile.gold}} | <i class="fas fa-city"></i> {{ cities|length }} 
-					</li></ul>
+				<ul class="list-group list-group-flush"><li class="list-group-item">
+					<img id = "goldicon" src="../../static/image/smallgold.png" width="20px" height="20px"> {{profile.gold}} | <i class="fas fa-city"></i> {{ cities|length }} 
+				</li></ul>
 
-					<ul class="list-group list-group-flush"><li class="list-group-item">
-						City Collection Progress
-						<div class="progress" style="width:100%">
-							<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{percentage}}" aria-valuemin="0" aria-valuemax="100" style="width: {{percentage}}%">{{percentage}}%</div>
-						</div>
-					</li></ul>
-
-					<div class="card-body">
-						<a><button type="submit" class="btn btn-primary">Update Profile</button></a>
+				<ul class="list-group list-group-flush"><li class="list-group-item">
+					City Collection Progress
+					<div class="progress" style="width:100%">
+						<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="{{percentage}}" aria-valuemin="0" aria-valuemax="100" style="width: {{percentage}}%">{{percentage}}%</div>
 					</div>
+				</li></ul>
 
+				<div class="card-body">
+					<a><button type="submit" class="btn btn-primary">Update Profile</button></a>
 				</div>
 				{% csrf_token %}
 			</form>
+			{% if error %}
+				<div class="alert alert-danger" role="alert"><button type="button" class="close" data-dismiss="alert">&times;</button>{{error}}</div>
+			{% endif %}
+			</div>
 		</div>
-
-		<main class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content" 
-			role="main">
-			<div class="jumbotron" style="background-color: white;color: black;padding: 1rem 2rem;" data-spy="scroll" data-target="#navbar-example2" data-offset="0">
-				<h2 class = "font-weight-bold" ><i class="fas fa-atlas"></i> Travel History</h2>
+			<div class="col-sm-8">			
+				<div data-spy="scroll" data-target="#navbar-example2" data-offset="0">
+				<h2 class = "font-weight-bold" ><i class="fas fa-route"></i> Travel History</h2>
 				{% if travels %}
 					<div class="row">
-					  <div class="col-4">
+					  <div class="col-sm-4">
 					    <div class="list-group" id="list-tab" role="tablist">
 					    	{% for travel in travels reversed %}
 					      		<a onclick="updateMap({{forloop.counter}})" class="list-group-item list-group-item-action" id="list-{{forloop.counter}}-list" data-toggle="list" href="#list-{{forloop.counter}}" role="tab" aria-controls="{{forloop.counter}}">Date: {{travel.date}}</a>
 					      	{% endfor %}
 					    </div>
 					  </div>
-					    {% load staticfiles %}
-					    <script src="{% static 'virtualTravel/profileMap.js' %}" type="text/javascript"></script>
-					  <div class="col-8">
+					  {% load staticfiles %}
+					  <script src="{% static 'virtualTravel/profileMap.js' %}" type="text/javascript"></script>
+					  <div class="col-sm-8">
 					    <div class="tab-content" id="nav-tabContent">
 					    	{% for route in routes reversed %}
 						      <div name="{% for city in route %}{{city.name}},{% endfor %}"  class="tab-pane fade show" id="list-{{forloop.counter}}" role="tabpanel" aria-labelledby="list-{{forloop.counter}}-list">
@@ -77,7 +80,7 @@
 						      	<button id="toggleMap{{forloop.counter}}" onclick="toggleMap({{forloop.counter}})" class="btn btn-secondary">Open the Map</button>
 						      </div>
 					    	{% endfor %}
-						    <div id="map"></div>
+						    <div id="profile_map"></div>
 					        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFBOGeajHk9pGoEpyDMmgsTZZHQiHiySE&callback=initMap"></script>
 					    </div>
 					  </div>
@@ -93,28 +96,29 @@
 
 				{% if cities %}
 					<div class="row">
-					  <div class="col-4">
+					  <div class="col-sm-4">
 					    <div class="list-group" id="list-tab" role="tablist">
 					    	{% for city in cities %}
-					      		<a class="list-group-item list-group-item-action" id='list-{{city.name|cut:" " }}-list' data-toggle="list" href='#list-{{city.name|cut:" " }}' role="tab" aria-controls='{{city.name|cut:" " }}'>{{city.name}}</a>
+					      		<a class="list-group-item list-group-item-action" id='list-{{city.name|cut:" "|cut:"." }}-list' data-toggle="list" href='#list-{{city.name|cut:" "|cut:"." }}' role="tab" aria-controls='{{city.name|cut:" "|cut:"." }}'>{{city.name}}</a>
 					      	{% endfor %}
 					    </div>
 					  </div>
-					  <div class="col-8">
+					  <div class="col-sm-6">
 					    <div class="tab-content" id="nav-tabContent">
 					    	{% for city in cities %}
-						      <div class="tab-pane fade show" id='list-{{city.name|cut:" " }}' role="tabpanel" aria-labelledby='list-{{city.name|cut:" " }}-list'>{{city.description}}</div>
+						      <div class="tab-pane fade show" id='list-{{city.name|cut:" "|cut:"." }}' role="tabpanel" aria-labelledby='list-{{city.name|cut:" "|cut:"." }}-list'>{{city.description}}</div>
 					    	{% endfor %}
 					    </div>
 					  </div>
 					</div>
 				{% else %}
 					<li class = "li_style">
-						You haven't been to any cities.<br>
+						You have not been to any city.<br>
+						<a href="{% url 'homepage' %}">Start a travel</a>
 					</li>
 				{% endif %}
 			</div>
-		</main>
+		</div>
 	</div>
 </div>
 

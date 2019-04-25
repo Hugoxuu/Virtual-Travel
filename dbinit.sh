@@ -4,7 +4,6 @@ if [ "$#" -ne 1 ]; then
 fi
 PYTHON="$1"
 rm db.sqlite3;
-
 $PYTHON manage.py makemigrations;
 $PYTHON manage.py migrate;
 $PYTHON manage.py shell < dbinit.py;

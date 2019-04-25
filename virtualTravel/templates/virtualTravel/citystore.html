@@ -1,20 +1,30 @@
 {% extends "virtualTravel/base.html" %}
 
 {% block content %}
-<form action="{% url 'searchCity' %}" method="post">
-  <div class="topnav">
-    <div class="input-group mb-3">
-      <input type="text" class="form-control" name = "search" placeholder="Search city" aria-label="Recipient's username" aria-describedby="button-addon2" style="margin: auto">
-      <div class="input-group-append">
-        <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Search</button>
-      </div>
-    </div>
-</div>
-{% csrf_token %}
-</form>
+<br><br>
 <div class="row">
+  <div class="col-3"></div>
+  <div class="col-6">
+  <form action="{% url 'searchCity' %}" method="post">
+    <div class="topnav">
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" name = "search" placeholder="Search city" aria-label="Recipient's username" aria-describedby="button-addon2" style="margin: auto">
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Search</button>
+        </div>
+      </div>
+  </div>
+  {% csrf_token %}
+</form>
+</div>
+</div>
+
+<div class="row">
+  <div class="col-2"></div>
+  <div class="col-8">
+    <div class = "row">
   {% for city in citys %}
-  <div class="col-fixed">
+    <div class = "col-fixed">
     <div class="card">
       <img class = "city-img" src= {{city.picture_url}} class="card-img-top" alt="Responsive image">
       <div class="card-body">
@@ -31,8 +41,9 @@
         {% endif %}
       </div>
     </div>
-  </div>
+    </div>
   {% endfor %}
+</div>
 </div>
 
 <form action="{% url 'buyCity' %}" method="post">

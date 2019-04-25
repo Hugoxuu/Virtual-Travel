@@ -2,20 +2,21 @@
 
 {% block content %}
 <div class="row">
+  <div class="col-1"></div>
   <div class="col-2">
     <div class="list-group" id="list-tab" role="tablist">
       <a class="list-group-item list-group-item-action {% if not site_message %}active {% endif %}"id="list-quiz-list" data-toggle="list" href="#list-quiz" role="tab" aria-controls="quiz">Quiz Upload</a>
       <a class="list-group-item list-group-item-action {% if site_message %}active {% endif %}"id="list-site-list" data-toggle="list" href="#list-site" role="tab" aria-controls="site">City Site Upload</a>
     </div>
   </div>
-  <div class="col-8">
+  <div class="col-6">
     <div class="tab-content" id="nav-tabContent">
-        <div class="tab-pane fade {% if not site_message %}show active {% endif %}jumbotron" id="list-quiz" role="tabpanel" aria-labelledby="list-quiz-list" style="background-color: #e9ecef;color: black;padding: 1rem 2rem;width: 600px">
+        <div class="tab-pane fade {% if not site_message %}show active {% endif %}" id="list-quiz" role="tabpanel" aria-labelledby="list-quiz-list">
             <h2 class="lead"><b>Upload your Quiz</b></h2>
             <p class="lead">Do you want to upload a quiz to challenge other players?</p>
             <hr>
             <form method="post" action="{% url 'user_upload' %}">
-                <table>
+                <table style="margin:auto">
                     <tr>
                         <td>City: 
                             <select name="quiz_city_name" required id="id_quiz_city_name" class="form-control" cols="40">
@@ -37,8 +38,9 @@
                             {% for error in field.errors %} {{error}} {% endfor %}
                         </td>
                     </tr>
+
                     <tr>
-                        <td>
+                        <td>Options:
                             <input type="text" name="quiz_option_1" required id="id_quiz_option_1" placeholder="Option 1" class="form-control" cols="40">
                         </td>
                         <td class="error">
@@ -101,7 +103,7 @@
               </p>
             {% endif %}
         </div>
-        <div class="tab-pane fade {% if site_message %}show active {% endif %}jumbotron" id="list-site" role="tabpanel" aria-labelledby="list-site-list" style="background-color: #e9ecef;color: black;padding: 1rem 2rem;width: 600px">    
+        <div class="tab-pane fade {% if site_message %}show active {% endif %}" id="list-site" role="tabpanel" aria-labelledby="list-site-list" >    
                 <h2 class="lead"><b>Upload your Site</b></h2>
                 <p class="lead">Do you want to share a site into a city that you have?</p>
                 <hr>
@@ -109,7 +111,7 @@
                     <table>
                         <tr>
                             <td>Site:
-                                <input type="text" name="name" required id="id_name" placeholder="Site Name" class="form-control" cols="40"><br>
+                                <input type="text" name="name" required id="id_name" placeholder="Site Name, e.g. Central Park" class="form-control" cols="40"><br>
                             </td>
                             <td class="error">
                                 {% for error in field.errors %} {{error}} {% endfor %}
@@ -117,15 +119,15 @@
                         </tr>
                         <tr>
                             <td>
-                                <textarea name="description" required id="id_description" placeholder="A Short Description of the Site" class="form-control" cols="40" rows="3"></textarea>
+                                <textarea name="description" required id="id_description" placeholder="Short Description of the Site" class="form-control" cols="40" rows="3"></textarea>
                             </td>
                             <td class="error">
                                 {% for error in field.errors %} {{error}} {% endfor %}
                             </td>
                         </tr>
                         <tr>
-                            <td>Picture:
-                                <input type="text" name="site_picture_url" required id="id_site_picture_url" placeholder="Picture URL" class="form-control" cols="40">
+                            <td>Picture URL:
+                                <input type="text" name="site_picture_url" required id="id_site_picture_url" placeholder="https://www.aaa.com/bbb.png" class="form-control" cols="40">
                             </td>
                             <td class="error">
                                 {% for error in field.errors %} {{error}} {% endfor %}
@@ -134,7 +136,7 @@
                         <tr>
                             <td>Site City:
                                 <select name="city_name" required id="id_city_name" class="form-control" cols="40">
-                                    <option selected>Choose:</option>
+                                    <option selected>Choose...</option>
                                     {% for city in city_pool %}
                                         <option value="{{city.name}}">{{city.name}}</option>
                                     {% endfor %}

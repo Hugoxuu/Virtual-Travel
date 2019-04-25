@@ -1,3 +1,20 @@
+function hide_dup(i){
+    $('#select_error').html("")
+    var selection1 = $('select[name=departure] option:selected');
+    var selection2 = $('select[name=destination] option:selected');
+    if(selection1.val()==selection2.val()){
+        if(i==1){
+            $('select[name=destination]').val("Choose...");
+        }
+        if(i==2){
+            $('select[name=departure]').val("Choose...");
+        }
+        $('#select_error').html('<br><div class="alert alert-danger" role="alert"><button type="button" '
+                        +'class="close" data-dismiss="alert">&times;</button>Please choose different '
+                        +'cities as destination/departure</div>')
+    }
+
+}
 function check_quiz(quizid) {
 
     var selection = $('input[name=question]:checked').val();

@@ -4,10 +4,10 @@
 <script>
     window.onload = function() {
         {% if new_user %}
-        document.getElementById("id_help_button").click();
+            document.getElementById("id_help_button").click();
         {% endif %}
         {% if finished %}
-        document.getElementById("id_summary_button").click();
+            document.getElementById("id_summary_button").click();
         {% endif %}
     }
 </script>
@@ -17,45 +17,60 @@
 
 {% block content %}
 <div class="row">
+    <div class="col-1"></div>
     <div class="col-2">
         <div class="list-group" id="list-tab" role="tablist">  
             <button class="list-group-item list-group-item-action active" id='list-City-list' data-toggle="list" role="tab" aria-controls='City'><i class="fas fa-route"></i> Travel Select</button>
             <button class="list-group-item list-group-item-action" disabled=""><i class="fas fa-map-marked-alt"></i>  Overview</button>
             <button class="list-group-item list-group-item-action" disabled=""><i class="fas fa-street-view"> </i>  City Exploring</button>
-            <button class="list-group-item list-group-item-action" disabled=""><span id="sp"></span><i class="fas fa-utensils"> </i>  Taste</button>
+            <button class="list-group-item list-group-item-action" disabled=""><i class="fas fa-utensils"> </i>  Taste</button>
             <button class="list-group-item list-group-item-action" disabled=""><i class="fas fa-chevron-circle-right"> </i>  Next Stop</button>
         </div>
     </div>
-    <div class="col-10">
+    <div class="col-8">
         <div class="tab-content" id="nav-tabContent"> 
-            <div class="tab-pane fade show active jumbotron" style="background-color: white;color: black;padding: 1rem 2rem;" id='list-City' role="tabpanel" aria-labelledby='list-City-list'>
-                <form method="POST" action="/virtualTravel/travel">
-                    <div class="form-group" style="width:300px;">
-                        <p class="font-weight-light">Select Your Departure City:</p>
-                        <select name="departure" class="form-control" id="departure-city">
-                            <option selected>Choose...</option>
-                            {% for city in cities %}
-                                <option value="{{city.name}}">{{city.name}}</option>
-                            {% endfor %}
-                        </select>
-                        <br>
-                        <p class="font-weight-light">Select Your Destination City:</p>
-                        <select name="destination" class="form-control" id="destination-city">
-                            <option selected>Choose...</option>
-                            {% for city in cities %}
-                                <option value="{{city.name}}">{{city.name}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
+            <div class="tab-pane fade show active" style="padding: 1rem 0rem;" id='list-City' role="tabpanel" aria-labelledby='list-City-list'>
+                <div class="row vdivide">
+                    <div class="col-sm-4">
+                        <form method="POST" action="/virtualTravel/travel">
+                            <div class="form-group" style="width:300px;">
+                                <p>Select Your Departure City:</p>
+                                <select name="departure" class="form-control" id="departure-city" onchange="hide_dup(1)">
+                                    <option selected>Choose...</option>
+                                    {% for city in cities %}
+                                        <option value="{{city.name}}">{{city.name}}</option>
+                                    {% endfor %}
+                                </select>
+                                <br>
+                                <p>Select Your Destination City:</p>
+                                <select name="destination" class="form-control" id="destination-city" onchange="hide_dup(2)">
+                                    <option selected>Choose...</option>
+                                    {% for city in cities %}
+                                        <option value="{{city.name}}">{{city.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
 
-                    <button type="submit" class="btn btn-primary">Start Your Journey</button>
-                    {% csrf_token %}
-                </form>
-                {% if errorlist %}
-                    {% for error in errorlist %}
-                        <br><div class="alert alert-danger" role="alert"><button type="button" class="close" data-dismiss="alert">&times;</button>{{error}}</div>
-                    {% endfor %}
-                {% endif %}
+                            <button type="submit" class="btn btn-primary">Start Your Journey</button>
+                            {% csrf_token %}
+                        </form>
+                        <div id="select_error">
+                        {% if errorlist %}
+                            {% for error in errorlist %}
+                                <br><div class="alert alert-danger" role="alert"><button type="button" class="close" data-dismiss="alert">&times;</button>{{error}}</div>
+                            {% endfor %}
+                        {% endif %}
+                        </div>
+                    </div>
+                    {% load staticfiles %}
+                    <script src="{% static 'virtualTravel/travelSelectMap.js' %}" type="text/javascript"></script>
+
+                    <div class="col-sm-8">
+                        <div name="{% for city in cities %}{{city.name}},{% endfor %}" id="travel_select_map"></div>
+                        <br><p style="text-align: center;">Geolocation of available cities</p>
+                    </div>
+                    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDFBOGeajHk9pGoEpyDMmgsTZZHQiHiySE&callback=initMap"></script>
+                </div>
             </div>
         </div>
     </div>
@@ -74,7 +89,7 @@
             </button>
         </div>
         <div class="modal-body">
-            <p>You've complete a journey! <i class="fas fa-globe-americas"></i></p>
+            <p>You completed a journey!</p>
             <ul>
                 <li>Gold earned from this trip: <strong>{{gold}}</strong></li>
                 {% if collected %}

@@ -7,12 +7,12 @@ Quiz.objects.all().delete()
 City.objects.all().delete()
 
 # Import city data to DB
-with open('CityInfo/Cities.txt','r') as cities:
+with open('DatabaseData/CityInfo/Cities.txt','r') as cities:
 	for city in cities:
 		fields = city.split('\t')
 		new_city = City.objects.create(name=fields[0],price=int(fields[1]), 
 						picture_url=fields[3])
-		with open('CityInfo/'+fields[0]+'.txt','r') as description_file:
+		with open('DatabaseData/CityInfo/'+fields[0]+'.txt','r') as description_file:
 			description = ""
 			for line in description_file:
 				description += line
@@ -20,13 +20,13 @@ with open('CityInfo/Cities.txt','r') as cities:
 		new_city.save()
 
 # Import site data to DB
-with open('SiteInfo/Sites.txt','r') as sities:
+with open('DatabaseData/SiteInfo/Sites.txt','r') as sities:
 	for site in sities:
 		fields = site.split('\t')
 		new_site = Site.objects.create(name=fields[0],
 			city=City.objects.get(name=fields[1]), 
 			picture_url=fields[2])
-		with open('SiteInfo/'+fields[0]+'.txt','r') as description_file:
+		with open('DatabaseData/SiteInfo/'+fields[0]+'.txt','r') as description_file:
 			description = ""
 			for line in description_file:
 				description += line
@@ -34,7 +34,7 @@ with open('SiteInfo/Sites.txt','r') as sities:
 		new_site.save()
 
 # Import quiz data to DB
-with open('CityInfo/QuizQs.txt','r') as quizQs:
+with open('DatabaseData//QuizInfo.txt','r') as quizQs:
 	for quizQ in quizQs:
 		fields = quizQ.split('\t')
 		quiz_city = City.objects.get(name=fields[0])

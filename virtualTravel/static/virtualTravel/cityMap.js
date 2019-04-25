@@ -10,7 +10,6 @@ function renderMap(response) {
     if (response.length <= 0) {
         return;
     }
-    // console.log(response);
 
     var mapOptions = {
         zoom: 13
@@ -46,6 +45,7 @@ function renderMap(response) {
     for (i = 0; i < sites.length; i++) {
         geocodeMarker(sites[i], geocoder, map, panorama, infowindow);
     }
+    $(".content").remove();
 }
 
 function geocodeCity(name, geocoder, map, panorama) {
@@ -102,7 +102,6 @@ function geocodeMarker(site, geocoder, map, panorama, infowindow) {
             google.maps.event.addListener(marker, 'click', function() {
                 infowindow.setContent(contentString)
                 infowindow.open(map, this);
-                // map.setZoom(13.5);
                 panorama.setPosition(location);
             });
 

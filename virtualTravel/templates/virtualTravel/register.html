@@ -31,8 +31,8 @@
                 <form class="col-12" method="post" action="{% url 'register' %}">
                     <div class="form-group-input">
                         <i class="fas fa-user"></i><input id="id_username" name="username" class="form-control" placeholder="Username">
-                        {% if name_error %}
-                         <p class="errorlist"><div class="alert alert-danger" role="alert">{{name_error}}</div></p>
+                        {% if username_error %}
+                         <p class="errorlist"><div class="alert alert-danger" role="alert">{{username_error}}</div></p>
                          {% endif %}
                     </div>
 
